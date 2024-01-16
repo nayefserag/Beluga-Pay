@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   UsePipes,
@@ -21,12 +22,12 @@ export class UserController {
     try {
       const newUser = await this.userService.checkAndCreateUser(user);
       return {
-        message: 'User created successfully',
+        message: UserMessages.USER_CREATED,
         status: HttpStatus.CREATED,
         data: newUser,
       };
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.CONFLICT);
+      throw new HttpException(err.message, HttpStatus.CONFLICT); // need to change
     }
   }
 
@@ -50,12 +51,35 @@ export class UserController {
 
   @Post('update')
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  async updateUser(@Body() user: UpdateUserDto) {
+  async updateUser(@Body() user: UpdateUserDto  , @Body() data: Email) {
     try {
-        
+      const existing = await this.userService.getUser(data.email); // don't forget to test this and try a way to remove this line to make check if it exist without this line
+      const updatedUser = await this.userService.updateUser(user);
+      return {
+        message: UserMessages.USER_UPDATED,
+        status: HttpStatus.OK,
+        data: updatedUser
+      }
     }
     catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST); // need to change
+    }
+  }
+
+  @Delete('deleteuser')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async deleteUser(@Body() data: Email) {
+    try {
+      const existing = await this.userService.getUser(data.email);
+      const deletedUser = await this.userService.deleteUser(data.email);
+      return {
+        message: UserMessages.USER_DELETED,
+        status: HttpStatus.OK,
+        data: deletedUser
+      }
+    }
+    catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST); // need to change
     }
   }
 }

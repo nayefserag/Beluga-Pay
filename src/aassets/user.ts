@@ -3,4 +3,6 @@ export const  UserMessages = {
     USER_NOT_FOUND: 'User not found',
     USER_CREATED: 'User created successfully',
     USER_FETCHED: 'User fetched successfully',
+    USER_UPDATED: 'User updated successfully',
+    USER_DELETED: 'User deleted successfully',  
 }
