@@ -1,9 +1,7 @@
 import {
-  IsBoolean,
   IsNotEmpty,
   IsString,
   IsOptional,
-  MinLength,
   IsEmail,
   IsStrongPassword,
 } from 'class-validator';
@@ -50,6 +48,7 @@ export class UserPasswordDto {
 }
 
 export class Email {
+  @IsEmail()
   @IsEmail()
   email: string;
 }
