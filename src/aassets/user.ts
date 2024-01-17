@@ -4,5 +4,7 @@ export const  UserMessages = {
     USER_CREATED: 'User created successfully',
     USER_FETCHED: 'User fetched successfully',
     USER_UPDATED: 'User updated successfully',
-    USER_DELETED: 'User deleted successfully',  
+    USER_DELETED: 'User deleted successfully', 
+    USER_NOT_CREATED :'User Not Created' ,
+    USER_NOT_DELETED :'Failed To delete user'
 }
