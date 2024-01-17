@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString, ValidateNested } from 'class-validator';
+import { TransactionDto } from './transaction.dto';
+import { Type } from 'class-transformer';
 
 export class BankAccountDto {
   @ApiProperty({
@@ -26,4 +28,18 @@ export class BankAccountDto {
   @IsPositive()
   @IsNotEmpty()
   balance: number;
+  @ApiProperty({
+    description: 'Array of transactions',
+    type: [TransactionDto], 
+    example: [
+      {
+        description: 'Transaction description',
+        amount : 500,
+        date : '2024-01-17T12:00:00Z',
+        email_sender : 'nayfserag@gmail.com',
+        email_reciver : 'john.doe@example.com'
+      },
+    ],
+  })
+  transactions: TransactionDto[];
 }
