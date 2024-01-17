@@ -120,7 +120,7 @@ export class UserPasswordDto {
   email: string;
 }
 
-export class Email {
+export class EmailDto {
   @ApiProperty({
     required: true,
     description: 'The email address',

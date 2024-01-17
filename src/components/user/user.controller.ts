@@ -7,7 +7,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { Email, UpdateUserDto, UserDto } from 'src/dto/user.dto';
+import { EmailDto, UpdateUserDto, UserDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 import { HttpStatus } from '@nestjs/common';
 import { UserMessages } from 'src/aassets/user';
@@ -40,7 +40,7 @@ export class UserController {
   @ApiOkResponse({ description: 'User fetched successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async getUser(@Body() data: Email) {
+  async getUser(@Body() data: EmailDto) {
     try {
       const user = await this.userService.getUser(data.email);
       if (!user) {
@@ -82,7 +82,7 @@ export class UserController {
   @Delete('deleteuser')
   @ApiOkResponse({ description: 'User deleted successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  async deleteUser(@Body() data: Email) {
+  async deleteUser(@Body() data: EmailDto) {
     try {
       await this.userService.getUser(data.email);
       await this.userService.deleteUser(data.email);
