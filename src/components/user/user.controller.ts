@@ -1,5 +1,12 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { Email, UpdateUserDto, UserDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
 import { HttpStatus } from '@nestjs/common';
@@ -11,7 +18,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  @ApiCreatedResponse({ description: 'User created successfully.'  })
+  @ApiCreatedResponse({ description: 'User created successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   async create(@Body() user: UserDto) {
     try {
@@ -19,7 +26,7 @@ export class UserController {
       return {
         message: UserMessages.USER_CREATED,
         status: HttpStatus.CREATED,
-        data: newUser
+        data: newUser,
       };
     } catch (error) {
       return {
@@ -57,7 +64,7 @@ export class UserController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   async updateUser(@Body() user: UpdateUserDto) {
     try {
-      const existing = await this.userService.getUser(user.email);
+      await this.userService.getUser(user.email);
       const updatedUser = await this.userService.updateUser(user);
       return {
         message: UserMessages.USER_UPDATED,
@@ -77,12 +84,11 @@ export class UserController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   async deleteUser(@Body() data: Email) {
     try {
-      const existing = await this.userService.getUser(data.email);
-      const deletedUser = await this.userService.deleteUser(data.email);
+      await this.userService.getUser(data.email);
+      await this.userService.deleteUser(data.email);
       return {
         message: UserMessages.USER_DELETED,
         status: HttpStatus.OK,
-        data: deletedUser,
       };
     } catch (error) {
       return {

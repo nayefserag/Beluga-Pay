@@ -47,13 +47,18 @@ export class UserService {
   }
 
   async deleteUser(email: string) {
-    const exist = await this.UserRepository.getUserByEmail(email);
-    if (!exist || Error) {
-      throw new Error(UserMessages.USER_NOT_FOUND);
+    const userOrError = await this.UserRepository.getUserByEmail(email);
+    if (userOrError instanceof Error) {
+      throw userOrError;
+    }
+
+    const hasAccounts = await this.UserRepository.userHasAccounts(userOrError);
+    if (hasAccounts) {
+      throw new Error(UserMessages.USER_HAS_ACCOUNTS);
     }
 
     const deletedUser = await this.UserRepository.deleteUser(email);
-    if (!deletedUser || Error) {
+    if (!deletedUser) {
       throw new Error(UserMessages.USER_NOT_DELETED);
     }
     return deletedUser;

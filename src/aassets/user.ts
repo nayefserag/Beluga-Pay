@@ -6,5 +6,7 @@ export const  UserMessages = {
     USER_UPDATED: 'User updated successfully',
     USER_DELETED: 'User deleted successfully', 
     USER_NOT_CREATED :'User Not Created' ,
-    USER_NOT_DELETED :'Failed To delete user'
+    USER_NOT_DELETED :'Failed To delete user',
+    USER_HAS_ACCOUNTS : 'This User Have Accounts And Its not allowd to delete account',
+    USER_ACCOUNT_CHECK_FAILED :'Error checking user accounts'
 }
