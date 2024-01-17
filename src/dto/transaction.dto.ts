@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsPositive, IsString, IsISO8601, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  IsISO8601,
+  IsEmail,
+} from 'class-validator';
 
 export class TransactionDto {
   @ApiProperty({
@@ -14,7 +21,7 @@ export class TransactionDto {
   @ApiProperty({
     description: 'Transaction amount',
     type: Number,
-    example: 50.00,
+    example: 50.0,
   })
   @IsNumber()
   @IsPositive()
@@ -50,5 +57,4 @@ export class TransactionDto {
   @IsString()
   @IsEmail()
   email_reciver: string;
-
 }
