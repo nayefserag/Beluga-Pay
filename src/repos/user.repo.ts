@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
-import { UpdateUserDto, UserDto } from 'src/dto/user.dto';
+import { UserDto } from 'src/dto/user.dto';
 import { Password } from 'src/helpers/password';
 
 @Injectable()
@@ -13,16 +12,20 @@ export class UserRepository {
     const newUser = await this.userModel.create(user);
     const hashedpassword = await Password.hashPassword(user.password);
     newUser.password = hashedpassword;
-    // await newUser.updateOne({ password: hashedpassword });
     newUser.save();
     return newUser;
   }
-
-  async getUserByEmail(email: string): Promise<UserDto | Error> {
+  /**
+   *
+   * @param email
+   * @returns
+   * @throws {Error} failed
+   */
+  async getUserByEmail(email: string): Promise<UserDto> {
     const user = await this.userModel.findOne({ email });
     return user;
   }
-  async updateUser(user: UserDto): Promise<UserDto | Error> {
+  async updateUser(user: UserDto): Promise<UserDto> {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: user.email },
       user,
@@ -31,7 +34,7 @@ export class UserRepository {
     return updatedUser;
   }
 
-  async deleteUser(email: string) {
+  async deleteUser(email: string): Promise<Boolean> {
     await this.userModel.deleteOne({ email });
     return true;
   }

@@ -1,16 +1,14 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Patch, Post } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiResponse,
   ApiBadRequestResponse,
-  ApiNotFoundResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
+  ApiTags,
 } from '@nestjs/swagger';
+import { UserMessages } from 'src/aassets/user';
 import { EmailDto, UpdateUserDto, UserDto } from 'src/dto/user.dto';
 import { UserService } from './user.service';
-import { HttpStatus } from '@nestjs/common';
-import { UserMessages } from 'src/aassets/user';
 
 @ApiTags('User CRUD Operations ')
 @Controller('user')
@@ -41,7 +39,7 @@ export class UserController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiNotFoundResponse({ description: 'User not found' })
   async getUser(@Body() data: EmailDto) {
-    try {
+    // try {
       const user = await this.userService.getUser(data.email);
       if (!user) {
         throw new Error(UserMessages.USER_NOT_FOUND);
@@ -51,12 +49,12 @@ export class UserController {
         status: HttpStatus.OK,
         data: user,
       };
-    } catch (error) {
-      return {
-        message: error.message,
-        status: HttpStatus.BAD_REQUEST,
-      };
-    }
+    // } catch (error) {
+      // return {
+      //   message: error.message,
+      //   status: HttpStatus.BAD_REQUEST,
+      // };
+    // }
   }
 
   @Patch('updateuser')
