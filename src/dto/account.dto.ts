@@ -1,20 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 import { TransactionDto } from './transaction.dto';
-import { Type } from 'class-transformer';
 
 export class BankAccountDto {
   @ApiProperty({
     description: 'The bank name',
     type: String,
-    example: 'Bank of Example',
+    example: 'CIB',
   })
   @IsString()
   @IsNotEmpty()
