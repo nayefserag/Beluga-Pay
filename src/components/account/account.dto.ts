@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
-import { TransactionDto } from './transaction.dto';
+import { TransactionDto } from '../transaction/transaction.dto';
 
 export class BankAccountDto {
   @ApiProperty({

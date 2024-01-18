@@ -9,7 +9,7 @@ import {
   IsArray,
   ValidateNested,
 } from 'class-validator';
-import { BankAccountDto } from './account.dto';
+import { BankAccountDto } from '../account/account.dto';
 import { Type } from 'class-transformer';
 
 export class UserDto {
