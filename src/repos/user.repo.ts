@@ -10,9 +10,6 @@ export class UserRepository {
 
   async createUser(user: UserDto): Promise<UserDto> {
     const newUser = await this.userModel.create(user);
-    const hashedpassword = await Password.hashPassword(user.password);
-    newUser.password = hashedpassword;
-    newUser.save();
     return newUser;
   }
   /**

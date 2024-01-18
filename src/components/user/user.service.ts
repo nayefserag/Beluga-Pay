@@ -4,12 +4,14 @@ import { Model } from 'mongoose';
 import { UserMessages } from 'src/aassets/user';
 import { UserDto } from 'src/components/user/user.dto';
 import { UserRepository } from '../../repos/user.repo';
+import { Password } from 'src/helpers/password';
 
 @Injectable()
 export class UserService {
   @InjectModel('user') private userModel: Model<UserDto | Error>;
   constructor(private readonly UserRepository: UserRepository) {}
   async createUser(user: UserDto): Promise<UserDto> {
+    user.password = await Password.hashPassword(user.password);
     const newUser = await this.UserRepository.createUser(user);
     return newUser;
   }
