@@ -13,18 +13,24 @@ export class UserService {
     return newUser;
   }
 
-  async getUser(email: string): Promise<UserDto | Error> {
+  async getUser(email: string): Promise<UserDto> {
     const user = await this.UserRepository.getUserByEmail(email);
     if (!user) {
-      throw new Error(UserMessages.USER_NOT_FOUND);
+      throw new HttpException(
+        UserMessages.USER_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
     }
     return user;
   }
 
-  async updateUser(user: UserDto): Promise<UserDto | Error> {
+  async updateUser(user: UserDto): Promise<UserDto> {
     const exist = await this.UserRepository.getUserByEmail(user.email);
     if (!exist) {
-      throw new Error(UserMessages.USER_NOT_FOUND);
+      throw new HttpException(
+        UserMessages.USER_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const newUser = await this.UserRepository.updateUser(user);
@@ -32,7 +38,7 @@ export class UserService {
     return newUser;
   }
 
-  async checkAndCreateUser(user: UserDto): Promise<UserDto | Error> {
+  async checkAndCreateUser(user: UserDto): Promise<UserDto> {
     const exist = await this.UserRepository.getUserByEmail(user.email);
     if (exist) {
       throw new HttpException(
@@ -53,9 +59,6 @@ export class UserService {
 
   async deleteUser(email: string) {
     const userOrError = await this.UserRepository.getUserByEmail(email);
-    if (userOrError instanceof Error) {
-      throw userOrError;
-    }
 
     const hasAccounts = await this.UserRepository.userHasAccounts(userOrError);
     if (hasAccounts) {
