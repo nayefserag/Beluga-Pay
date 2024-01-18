@@ -18,7 +18,6 @@ export class UserDto {
     description: 'The name of the user',
     example: 'John Doe',
   })
-  @Prop({ required: true, type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -28,8 +27,6 @@ export class UserDto {
     description: 'The email address of the user',
     example: 'john.doe@example.com',
   })
-  @Prop({ required: true, type: String })
-  @IsNotEmpty()
   @IsString()
   @IsEmail()
   email: string;

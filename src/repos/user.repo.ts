@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { BankAccountDto } from 'src/components/account/account.dto';
 import { UserDto } from 'src/components/user/user.dto';
 
 @Injectable()
@@ -32,5 +33,14 @@ export class UserRepository {
 
   async userHasAccounts(user: UserDto) {
     return user.accounts && user.accounts.length > 0;
+  }
+
+  async addAccountToUser(user: UserDto, account: BankAccountDto) {
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { email: user.email },
+      { $push: { accounts: account } },
+      { new: true },  
+    )
+    return updatedUser;
   }
 }

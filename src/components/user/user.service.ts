@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { UserMessages } from 'src/aassets/user';
+import { UserMessages } from 'src/components/user/user.assets';
 import { UserDto } from 'src/components/user/user.dto';
 import { UserRepository } from '../../repos/user.repo';
 import { Password } from 'src/helpers/password';
