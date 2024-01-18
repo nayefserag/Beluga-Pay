@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDto } from 'src/components/user/user.dto';
-import { Password } from 'src/helpers/password';
 
 @Injectable()
 export class UserRepository {
@@ -12,12 +11,7 @@ export class UserRepository {
     const newUser = await this.userModel.create(user);
     return newUser;
   }
-  /**
-   *
-   * @param email
-   * @returns
-   * @throws {Error} failed
-   */
+
   async getUserByEmail(email: string): Promise<UserDto> {
     const user = await this.userModel.findOne({ email });
     return user;

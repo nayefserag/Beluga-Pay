@@ -17,6 +17,7 @@ import {
 import { UserMessages } from 'src/aassets/user';
 import { EmailDto, UpdateUserDto, UserDto } from 'src/components/user/user.dto';
 import { UserService } from './user.service';
+import { HttpException } from '@nestjs/common';
 
 @ApiTags('User CRUD Operations ')
 @Controller('user')
@@ -27,19 +28,12 @@ export class UserController {
   @ApiCreatedResponse({ description: 'User created successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   async create(@Body() user: UserDto) {
-    try {
-      const newUser = await this.userService.checkAndCreateUser(user);
-      return {
-        message: UserMessages.USER_CREATED,
-        status: HttpStatus.CREATED,
-        data: newUser,
-      };
-    } catch (error) {
-      return {
-        message: error.message,
-        status: HttpStatus.BAD_REQUEST,
-      };
-    }
+    const newUser = await this.userService.checkAndCreateUser(user);
+    return {
+      message: UserMessages.USER_CREATED,
+      status: HttpStatus.CREATED,
+      data: newUser,
+    };
   }
 
   @Get('getuser')
@@ -47,60 +41,42 @@ export class UserController {
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiNotFoundResponse({ description: 'User not found' })
   async getUser(@Body() data: EmailDto) {
-    // try {
     const user = await this.userService.getUser(data.email);
     if (!user) {
-      throw new Error(UserMessages.USER_NOT_FOUND);
+      throw new HttpException(
+        UserMessages.USER_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
     }
     return {
       message: UserMessages.USER_FETCHED,
       status: HttpStatus.OK,
       data: user,
     };
-    // } catch (error) {
-    // return {
-    //   message: error.message,
-    //   status: HttpStatus.BAD_REQUEST,
-    // };
-    // }
   }
 
   @Patch('updateuser')
   @ApiOkResponse({ description: 'User updated successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   async updateUser(@Body() user: UpdateUserDto) {
-    try {
-      await this.userService.getUser(user.email);
-      const updatedUser = await this.userService.updateUser(user);
-      return {
-        message: UserMessages.USER_UPDATED,
-        status: HttpStatus.OK,
-        data: updatedUser,
-      };
-    } catch (error) {
-      return {
-        message: error.message,
-        status: HttpStatus.BAD_REQUEST,
-      };
-    }
+    await this.userService.getUser(user.email);
+    const updatedUser = await this.userService.updateUser(user);
+    return {
+      message: UserMessages.USER_UPDATED,
+      status: HttpStatus.OK,
+      data: updatedUser,
+    };
   }
 
   @Delete('deleteuser')
   @ApiOkResponse({ description: 'User deleted successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   async deleteUser(@Body() data: EmailDto) {
-    try {
-      await this.userService.getUser(data.email);
-      await this.userService.deleteUser(data.email);
-      return {
-        message: UserMessages.USER_DELETED,
-        status: HttpStatus.OK,
-      };
-    } catch (error) {
-      return {
-        message: error.message,
-        status: HttpStatus.BAD_REQUEST,
-      };
-    }
+    await this.userService.getUser(data.email);
+    await this.userService.deleteUser(data.email);
+    return {
+      message: UserMessages.USER_DELETED,
+      status: HttpStatus.OK,
+    };
   }
 }

@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserMessages } from 'src/aassets/user';
 import { UserDto } from 'src/components/user/user.dto';
 import { UserRepository } from '../../repos/user.repo';
@@ -8,7 +6,6 @@ import { Password } from 'src/helpers/password';
 
 @Injectable()
 export class UserService {
-  @InjectModel('user') private userModel: Model<UserDto | Error>;
   constructor(private readonly UserRepository: UserRepository) {}
   async createUser(user: UserDto): Promise<UserDto> {
     user.password = await Password.hashPassword(user.password);
@@ -38,11 +35,17 @@ export class UserService {
   async checkAndCreateUser(user: UserDto): Promise<UserDto | Error> {
     const exist = await this.UserRepository.getUserByEmail(user.email);
     if (exist) {
-      throw new Error(UserMessages.USER_IS_ALREADY_REGISTERED);
+      throw new HttpException(
+        UserMessages.USER_IS_ALREADY_REGISTERED,
+        HttpStatus.CONFLICT,
+      );
     }
-    const newUser = await this.UserRepository.createUser(user);
+    const newUser = await this.createUser(user);
     if (!newUser) {
-      throw new Error(UserMessages.USER_NOT_CREATED);
+      throw new HttpException(
+        UserMessages.USER_NOT_CREATED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return newUser;
@@ -56,12 +59,18 @@ export class UserService {
 
     const hasAccounts = await this.UserRepository.userHasAccounts(userOrError);
     if (hasAccounts) {
-      throw new Error(UserMessages.USER_HAS_ACCOUNTS);
+      throw new HttpException(
+        UserMessages.USER_HAS_ACCOUNTS,
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const deletedUser = await this.UserRepository.deleteUser(email);
     if (!deletedUser) {
-      throw new Error(UserMessages.USER_NOT_DELETED);
+      throw new HttpException(
+        UserMessages.USER_NOT_DELETED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
     return deletedUser;
   }
