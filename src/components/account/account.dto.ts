@@ -34,8 +34,8 @@ export class BankAccountDto {
         description: 'Transaction description',
         amount: 500,
         date: '2024-01-17T12:00:00Z',
-        email_sender: 'nayfserag@gmail.com',
-        email_reciver: 'john.doe@example.com',
+        sender: 'nayfserag@gmail.com',
+        receiver: 'john.doe@example.com',
       },
     ],
   })
