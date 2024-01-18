@@ -71,9 +71,15 @@ export class AccountController {
   // }
 
   @Patch('updateaccount/:email')
-  async updateAccount(@Body() account: UpdateBankAccountDto, @Param('email') email: string) {
+  async updateAccount(
+    @Body() account: UpdateBankAccountDto,
+    @Param('email') email: string,
+  ) {
     await this.accountService.getAccounts(null, null, email);
-    const updatedAccount = await this.accountService.updateAccount(account, email);
+    const updatedAccount = await this.accountService.updateAccount(
+      account,
+      email,
+    );
     return {
       message: AccountMessages.ACCOUNT_UPDATED_SUCCESSFULLY,
       status: HttpStatus.OK,
@@ -88,6 +94,6 @@ export class AccountController {
     return {
       message: AccountMessages.ACCOUNT_DELETED_SUCCESSFULLY,
       status: HttpStatus.OK,
-    }
+    };
   }
 }
