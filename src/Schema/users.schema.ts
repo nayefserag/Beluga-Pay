@@ -1,14 +1,20 @@
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Account } from './account.schema';
 
-export const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  accounts: [
-    {
-      bankName: String,
-      accountNumber: String,
-      balance : Number
-    },
-  ],
-});
+@Schema()
+export class User extends Document {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  email: string;
+
+  @Prop({ required: true })
+  password: string;
+
+  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Account' }] })
+  accounts: Account[];
+}
+
+export const UserSchema = SchemaFactory.createForClass(User);
