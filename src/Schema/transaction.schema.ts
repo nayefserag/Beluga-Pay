@@ -8,6 +8,9 @@ export class Transaction extends Document {
   description: string;
 
   @Prop()
+  method: string;
+
+  @Prop()
   amount: number;
 
   @Prop({ type: Date, default: Date.now })

@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsNumber,
+  IsPhoneNumber,
   IsPositive,
   IsString,
-  Length,
   Matches,
+  MinLength,
 } from 'class-validator';
 import { TransactionDto } from '../transaction/transaction.dto';
 
@@ -16,33 +18,52 @@ export class BankAccountDto {
     description: 'The email address of the user',
     example: 'john.doe@example.com',
   })
-  @IsString()
   @IsEmail()
   email: string;
 
   @ApiProperty({
-    description: 'The bank name',
-    type: String,
-    example: 'CIB',
+    description: 'Customer name',
+    example: 'John Doe',
   })
-  @Length(2, 50)
   @IsString()
-  bankName: string;
+  @MinLength(3)
+  customerName: string;
+
+  @ApiProperty({
+    description: 'Account type (savings or current)',
+    example: 'savings',
+    enum: ['savings', 'current'],
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['savings', 'current'], {
+    message: 'Invalid account type. Must be either "savings" or "current".',
+  })
+  accountType: 'savings' | 'current';
+
+  @ApiProperty({
+    description: 'The bank name',
+    example: 'Beluga',
+  })
+  bankName: string = 'Beluga';
 
   @ApiProperty({
     description: 'The account number',
-    type: String,
-    example: '1234567890',
+    example: '1234567890123456',
   })
-  @Matches(/^\d{16}$/, { message: 'Account number must be a 16-digit number' })
-  @IsString()
-  @IsNotEmpty()
   accountNumber: string;
 
-  @ApiProperty({ description: 'Balance', type: Number, example: '1000$' })
+  @ApiProperty({ description: 'Balance', example: 1000 })
   @IsPositive()
   @IsNumber()
   balance: number;
+
+  @ApiProperty({
+    description: 'Phone number',
+    example: '+201234567890',
+  })
+  @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
+  phoneNumber: string;
 
   @ApiProperty({
     description: 'Array of transactions',
