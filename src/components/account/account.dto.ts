@@ -13,6 +13,8 @@ import {
 import { TransactionDto } from '../transaction/transaction.dto';
 
 export class BankAccountDto {
+
+   _id: string;
   @ApiProperty({
     required: true,
     description: 'The email address of the user',

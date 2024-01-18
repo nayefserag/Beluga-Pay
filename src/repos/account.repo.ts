@@ -6,11 +6,14 @@ import {
   BankAccountDto,
   UpdateBankAccountDto,
 } from 'src/components/account/account.dto';
+import { UserRepository } from 'src/repos/user.repo';
 
 @Injectable()
 export class AccountRepository {
   constructor(
     @InjectModel('account') private accountModel: Model<BankAccountDto>,
+    @InjectModel('user') private userModel: Model<BankAccountDto>,
+    private readonly UserRepository: UserRepository,
   ) {}
 
   async createAccount(account: BankAccountDto): Promise<BankAccountDto> {
@@ -50,14 +53,14 @@ export class AccountRepository {
       throw new HttpException(
         AccountMessages.ACCOUNT_NOT_FOUND,
         HttpStatus.NOT_FOUND,
-      )
+      );
     }
     const updatedAccount = await this.accountModel.findOneAndUpdate(
       { email: email },
       accountUpdate,
       { new: true },
     );
-   
+
     if (!updatedAccount) {
       throw new HttpException(
         AccountMessages.ACCOUNT_DETAILS_NOT_FOUND,
@@ -74,14 +77,15 @@ export class AccountRepository {
       throw new HttpException(
         AccountMessages.ACCOUNT_NOT_FOUND,
         HttpStatus.NOT_FOUND,
-      )
+      );
     }
     if (account.transactions.length > 0) {
       throw new HttpException(
         AccountMessages.ACCOUNT_HAS_TRANSACTIONS,
-        HttpStatus.FORBIDDEN
-      )
+        HttpStatus.FORBIDDEN,
+      );
     }
+    const user = await this.UserRepository.removeAccountFromUser(account.email, account._id.toString())
     await this.accountModel.findOneAndDelete({ email });
   }
 }

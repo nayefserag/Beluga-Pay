@@ -43,4 +43,15 @@ export class UserRepository {
     )
     return updatedUser;
   }
+  async removeAccountFromUser(email: string, accountId: string) {
+
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { email: email },
+      { $pull: { accounts: { $in: [accountId] } } },
+      { new: true } 
+    );
+  
+    return updatedUser;
+  
+  }
 }
