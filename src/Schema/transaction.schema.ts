@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { Account, AccountSchema } from './account.schema';
+import { Account } from './account.schema';
 
 @Schema()
 export class Transaction extends Document {

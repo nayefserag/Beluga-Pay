@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Schema as MongooseSchema } from 'mongoose';
 import { Transaction } from './transaction.schema';
 
 @Schema()
-export class Account extends Document {
+export class Account {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   user: MongooseSchema.Types.ObjectId;
 
