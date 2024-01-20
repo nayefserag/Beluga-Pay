@@ -6,7 +6,10 @@ import {
   BankAccountDto,
   UpdateBankAccountDto,
 } from 'src/components/account/account.dto';
-import { TransactionViaAccountNumberDto, TransactionViaPhoneDto } from 'src/components/transaction/transaction.dto';
+import {
+  TransactionViaAccountNumberDto,
+  TransactionViaPhoneDto,
+} from 'src/components/transaction/transaction.dto';
 import { UserRepository } from 'src/repos/user.repo';
 
 @Injectable()
@@ -89,24 +92,73 @@ export class AccountRepository {
         HttpStatus.FORBIDDEN,
       );
     }
-    const user = await this.UserRepository.removeAccountFromUser(account.email, account._id.toString())
+    await this.UserRepository.removeAccountFromUser(
+      account.email,
+      account._id.toString(),
+    );
     await this.accountModel.findOneAndDelete({ email });
   }
 
+  async checkBalance(
+    senderAccount: BankAccountDto,
+    recipientAccount: BankAccountDto,
+  ) {
+    if (senderAccount.accountNumber === recipientAccount.accountNumber) {
+      throw new HttpException(
+        'Sender and recipient cannot be the same account',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 
-  async addTrasactionToAccounts(senderAccount: BankAccountDto, recipientAccount: BankAccountDto , transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto) {
-    const newTransaction1 = await this.accountModel.findOneAndUpdate(
-      { _id: recipientAccount._id },
-      { $push: { transactions: transaction }, $set: { balance: recipientAccount.balance + transaction.amount } },
-      { new: true },
-    );
-    const newTransaction2 = await this.accountModel.findOneAndUpdate(
-      { _id: senderAccount._id },
-      { $push: { transactions: transaction } , $set: { balance: senderAccount.balance - transaction.amount } },
-      { new: true },
-    )
-    
-    return true
-    
+  async addTransactionToAccounts(
+    senderAccount: BankAccountDto,
+    recipientAccount: BankAccountDto,
+    transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
+    status: string = 'pending',
+  ) {
+    await this.checkBalance(senderAccount, recipientAccount);
+    if (status === 'accepted') {
+      if (senderAccount.balance < transaction.amount) {
+        throw new HttpException(
+          'Insufficient funds to complete the transaction',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      await this.accountModel.findOneAndUpdate(
+        { _id: recipientAccount._id },
+        {
+          $push: { transactions: transaction },
+          $set: { balance: recipientAccount.balance + transaction.amount },
+        },
+        { new: true },
+      );
+      await this.accountModel.findOneAndUpdate(
+        { _id: senderAccount._id },
+        {
+          $push: { transactions: transaction },
+          $set: { balance: senderAccount.balance - transaction.amount },
+        },
+        { new: true },
+      );
+    }
+
+    if (status === 'rejected' || status === 'pending') {
+      await this.accountModel.findOneAndUpdate(
+        { _id: senderAccount._id },
+        { $push: { transactions: transaction } },
+        { new: true },
+      );
+      await this.accountModel.findOneAndUpdate(
+        { _id: recipientAccount._id },
+        { $push: { transactions: transaction } },
+        { new: true },
+      );
+    } else {
+      throw new HttpException(
+        'Invalid transaction status',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

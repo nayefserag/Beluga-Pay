@@ -5,5 +5,6 @@ export const TransactionMessages = {
     TRANSACTION_UPDATED: 'Transaction updated successfully',
     TRANSACTION_DELETED: 'Transaction deleted successfully',
     TRANSACTION_NOT_CREATED: 'Transaction Not Created',
+    TRANSACTION_REJECTED: 'Transaction Rejected',
   };
   
