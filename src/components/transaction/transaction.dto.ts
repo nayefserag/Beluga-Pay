@@ -5,10 +5,84 @@ import {
   IsPositive,
   IsString,
   IsISO8601,
-  IsEmail,
+  IsPhoneNumber,
+  IsIn,
+  Length,
 } from 'class-validator';
+import { formatISO } from 'date-fns';
 
-export class TransactionDto {
+export class TransactionViaPhoneDto {
+  _id: string;
+
+  @ApiProperty({
+    description: 'Transaction via',
+    type: String,
+    example: 'Phone',
+  })
+  via: string = 'Phone';
+
+  @ApiProperty({
+    description: 'Transaction description',
+    type: String,
+    example: 'Payment for goods',
+  })
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @ApiProperty({
+    description: 'Transaction amount',
+    type: Number,
+    example: 50.0,
+  })
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  amount: number;
+
+  @ApiProperty({
+    description: 'Transaction date',
+    type: String,
+    example: '2024-01-17T12:00:00Z',
+  })
+  date: string = formatISO(new Date());
+
+  @ApiProperty({
+    description: 'Transaction sender',
+    type: String,
+    example: '1234567890',
+  })
+  @IsPhoneNumber('EG')
+  sender: string;
+
+  @ApiProperty({
+    description: 'Transaction receiver',
+    type: String,
+    example: '1234567890',
+  })
+  @IsPhoneNumber('EG')
+  receiver: string;
+
+  @ApiProperty({
+    description: 'Transaction status',
+    type: String,
+    example: 'pending',
+  })
+  @IsIn(['pending', 'accepted', 'rejected'], {
+    message: 'Status must be either pending, accepted, or rejected',
+  })
+  status: string = 'pending';
+}
+export class TransactionViaAccountNumberDto {
+  _id: string;
+
+  @ApiProperty({
+    description: 'Transaction via',
+    type: String,
+    example: 'Account Number',
+  })
+  via: string = 'Account Number';
+
   @ApiProperty({
     description: 'Transaction description',
     type: String,
@@ -36,25 +110,37 @@ export class TransactionDto {
   @IsString()
   @IsISO8601({ strict: true })
   @IsNotEmpty()
-  date: string;
+  date: string = formatISO(new Date());
 
   @ApiProperty({
-    required: true,
-    description: 'The email address to update',
-    example: 'nayfserag@example.com',
+    description: 'Account number associated with the transaction',
+    type: String,
+    example: '1234567891234567',
   })
-  @IsNotEmpty()
   @IsString()
-  @IsEmail()
-  email_sender: string;
+  @IsNotEmpty()
+  @Length(16, 16, { message: 'Account number must be exactly 16 digits long' })
+  sender: string;
 
   @ApiProperty({
-    required: true,
-    description: 'The email address to update',
-    example: 'jane.doe@example.com',
+    description: 'Account number associated with the transaction',
+    type: String,
+    example: '1234567891234567',
   })
-  @IsNotEmpty()
   @IsString()
-  @IsEmail()
-  email_reciver: string;
+  @IsNotEmpty()
+  @Length(16, 16, { message: 'Account number must be exactly 16 digits long' })
+  receiver: string;
+
+  @ApiProperty({
+    description: 'Transaction status',
+    type: String,
+    example: 'pending',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['pending', 'accepted', 'rejected'], {
+    message: 'Status must be either pending, accepted, or rejected',
+  })
+  status: string;
 }

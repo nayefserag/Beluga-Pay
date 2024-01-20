@@ -1,29 +1,33 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
-import { Account } from './account.schema';
+import { Document } from 'mongoose';
 
 @Schema()
 export class Transaction extends Document {
-  @Prop()
+
+  @Prop({ required: false })
+  via: string;
+
+  @Prop({ required: true })
   description: string;
 
-  @Prop()
-  method: string;
-
-  @Prop()
+  @Prop({ required: true, type: Number, min: 0 })
   amount: number;
 
-  @Prop({ type: Date, default: Date.now })
+  @Prop({ type: Date, default: Date.now, required: true })
   date: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Account' })
-  sender: Account;
+  @Prop({ required: true })
+  sender: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Account' })
-  receiver: Account;
+  @Prop({ required: true })
+  receiver: string;
 
-  @Prop()
+  @Prop({
+    required: false,
+    enum: ['pending', 'accepted', 'rejected'],
+  })
   status: string;
+
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction);

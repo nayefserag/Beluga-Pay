@@ -10,11 +10,10 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { TransactionDto } from '../transaction/transaction.dto';
+import { TransactionViaAccountNumberDto, TransactionViaPhoneDto } from '../transaction/transaction.dto';
 
 export class BankAccountDto {
-
-   _id: string;
+  _id: string;
   @ApiProperty({
     required: true,
     description: 'The email address of the user',
@@ -69,7 +68,7 @@ export class BankAccountDto {
 
   @ApiProperty({
     description: 'Array of transactions',
-    type: [TransactionDto],
+    type: [TransactionViaPhoneDto],
     example: [
       {
         description: 'Transaction description',
@@ -80,10 +79,13 @@ export class BankAccountDto {
       },
     ],
   })
-  transactions: TransactionDto[];
+  transactions: TransactionViaPhoneDto[];
 }
 
 export class UpdateBankAccountDto {
+
+  
+
   @ApiProperty({
     required: false,
     description: 'The email address of the user',
@@ -118,7 +120,7 @@ export class UpdateBankAccountDto {
 
   @ApiProperty({
     description: 'Array of transactions',
-    type: [TransactionDto],
+    type: [TransactionViaPhoneDto , TransactionViaAccountNumberDto],
     example: [
       {
         description: 'Transaction description',
@@ -129,5 +131,5 @@ export class UpdateBankAccountDto {
       },
     ],
   })
-  transactions: TransactionDto[];
+  transactions: TransactionViaPhoneDto[] | TransactionViaAccountNumberDto[];
 }

@@ -16,4 +16,6 @@ export const AccountMessages = {
   ACCOUNT_DETAILS_NOT_FOUND: 'Account Details Not Provided',
   ACCOUNT_DELETED_SUCCESSFULLY: 'Account Deleted Successfully',
   ACCOUNT_HAS_TRANSACTIONS: 'This account has transactions and cant be deleted',
+  ACCOUNT_SENDER_NOT_FOUND: 'Account Sender Not Found',
+  ACCOUNT_RECEIVER_NOT_FOUND: 'Account Receiver Not Found',
 };

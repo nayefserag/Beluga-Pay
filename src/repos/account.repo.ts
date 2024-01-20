@@ -6,13 +6,13 @@ import {
   BankAccountDto,
   UpdateBankAccountDto,
 } from 'src/components/account/account.dto';
+import { TransactionViaAccountNumberDto, TransactionViaPhoneDto } from 'src/components/transaction/transaction.dto';
 import { UserRepository } from 'src/repos/user.repo';
 
 @Injectable()
 export class AccountRepository {
   constructor(
     @InjectModel('account') private accountModel: Model<BankAccountDto>,
-    @InjectModel('user') private userModel: Model<BankAccountDto>,
     private readonly UserRepository: UserRepository,
   ) {}
 
@@ -25,6 +25,7 @@ export class AccountRepository {
     id: string,
     accountNumber?: string,
     email?: string,
+    phoneNumber?: string,
   ): Promise<BankAccountDto> {
     //need review
     if (accountNumber) {
@@ -32,6 +33,9 @@ export class AccountRepository {
     }
     if (email) {
       return await this.accountModel.findOne({ email });
+    }
+    if (phoneNumber) {
+      return await this.accountModel.findOne({ phoneNumber });
     }
     if (id && !mongoose.Types.ObjectId.isValid(id)) {
       throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
@@ -87,5 +91,22 @@ export class AccountRepository {
     }
     const user = await this.UserRepository.removeAccountFromUser(account.email, account._id.toString())
     await this.accountModel.findOneAndDelete({ email });
+  }
+
+
+  async addTrasactionToAccounts(senderAccount: BankAccountDto, recipientAccount: BankAccountDto , transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto) {
+    const newTransaction1 = await this.accountModel.findOneAndUpdate(
+      { _id: recipientAccount._id },
+      { $push: { transactions: transaction }, $set: { balance: recipientAccount.balance + transaction.amount } },
+      { new: true },
+    );
+    const newTransaction2 = await this.accountModel.findOneAndUpdate(
+      { _id: senderAccount._id },
+      { $push: { transactions: transaction } , $set: { balance: senderAccount.balance - transaction.amount } },
+      { new: true },
+    )
+    
+    return true
+    
   }
 }

@@ -13,7 +13,7 @@ export class AccountService {
   ) {}
 
   async checkAndcreateAccount(account: BankAccountDto) {
-    const findAccount = await this.accountRepo.getBy(null, null, account.email);
+    const findAccount = await this.accountRepo.getBy(null, null, account.email,null);
     if (findAccount) {
       throw new HttpException(
         AccountMessages.ACCOUNT_IS_ALREADY_REGISTERED,
@@ -43,7 +43,7 @@ export class AccountService {
   }
 
   async getAccounts(id: string, accountNumber: string, email: string) {
-    const account = await this.accountRepo.getBy(id, accountNumber, email);
+    const account = await this.accountRepo.getBy(id, accountNumber, email , null);
     if (!account) {
       throw new HttpException(
         AccountMessages.ACCOUNT_NOT_FOUND,
