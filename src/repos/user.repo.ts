@@ -13,11 +13,11 @@ export class UserRepository {
     return newUser;
   }
 
-  async getUserByEmail(email: string): Promise<UserDto> {
+  async getUserByEmail({ email }: { email: string }): Promise<UserDto|null> {
     const user = await this.userModel.findOne({ email });
     return user;
   }
-  async updateUser(user: UserDto): Promise<UserDto> {
+  async updateUser({ user }: { user: UserDto }): Promise<UserDto | null> {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: user.email },
       user,
@@ -31,27 +31,27 @@ export class UserRepository {
     return true;
   }
 
-  async userHasAccounts(user: UserDto) {
-    return user.accounts && user.accounts.length > 0;
+  async userHasAccounts(user: UserDto) :Promise<Boolean> {
+    const state =  user.accounts && user.accounts.length > 0;
+    return state
+    
   }
 
   async addAccountToUser(user: UserDto, account: BankAccountDto) {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: user.email },
       { $push: { accounts: account } },
-      { new: true },  
-    )
+      { new: true },
+    );
     return updatedUser;
   }
   async removeAccountFromUser(email: string, accountId: string) {
-
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: email },
       { $pull: { accounts: { $in: [accountId] } } },
-      { new: true } 
+      { new: true },
     );
-  
+
     return updatedUser;
-  
   }
 }

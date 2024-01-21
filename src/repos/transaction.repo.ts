@@ -24,7 +24,7 @@ export class TransactionRepository {
     return newTransaction;
   }
 
-  async getTransactionById(id: string): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
+  async getTransactionById(id: string): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto | null> {
     const transaction = await this.transactionModel.findById(id);
     return transaction;
   }

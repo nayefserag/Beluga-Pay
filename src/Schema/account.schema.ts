@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transaction } from './transaction.schema';
 
 @Schema()
 export class Account {
@@ -24,8 +25,8 @@ export class Account {
   @Prop() 
   phoneNumber: string;
 
-  @Prop({ type: [{ type: Object }] })
-  transactions: Object[];
+  @Prop({ type: [{ type: Transaction }] })
+  transactions: Transaction[];
 
 }
 

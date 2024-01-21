@@ -28,7 +28,9 @@ export class AccountController {
 
   @Get('getbyid/:id')
   async get(@Param('id') id: string) {
-    const account = await this.accountService.getAccounts(id, null, null);
+    const account = await this.accountService.getAccounts({
+      id,
+    });
     return {
       message: 'Accounts fetched successfully',
       status: HttpStatus.OK,
@@ -38,7 +40,9 @@ export class AccountController {
 
   @Get('getbyemail/:email')
   async getByEmail(@Param('email') email: string) {
-    const account = await this.accountService.getAccounts(null, null, email);
+    const account = await this.accountService.getAccounts({
+      email,
+    });
     return {
       message: 'Accounts fetched successfully',
       status: HttpStatus.OK,
@@ -48,11 +52,9 @@ export class AccountController {
 
   @Get('getbyaccountnumber/:accountNumber')
   async getByAccountNumber(@Param('accountNumber') accountNumber: string) {
-    const account = await this.accountService.getAccounts(
-      null,
+    const account = await this.accountService.getAccounts({
       accountNumber,
-      null,
-    );
+    });
     return {
       message: 'Accounts fetched successfully',
       status: HttpStatus.OK,
@@ -75,7 +77,9 @@ export class AccountController {
     @Body() account: UpdateBankAccountDto,
     @Param('email') email: string,
   ) {
-    await this.accountService.getAccounts(null, null, email);
+    await this.accountService.getAccounts({
+      email,
+    });
     const updatedAccount = await this.accountService.updateAccount(
       account,
       email,
@@ -89,7 +93,9 @@ export class AccountController {
 
   @Delete('deleteaccount/:email')
   async deleteAccount(@Param('email') email: string) {
-    await this.accountService.getAccounts(null, null, email);
+    await this.accountService.getAccounts({
+      email,
+    });
     await this.accountService.deleteAccount(email);
     return {
       message: AccountMessages.ACCOUNT_DELETED_SUCCESSFULLY,

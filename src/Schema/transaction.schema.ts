@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class Transaction extends Document {
+export class Transaction  {
 
   @Prop({ required: false })
   via: string;

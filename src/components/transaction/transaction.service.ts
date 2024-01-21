@@ -5,90 +5,13 @@ import {
 } from './transaction.dto';
 import { TransactionRepository } from 'src/repos/transaction.repo';
 import { AccountRepository } from 'src/repos/account.repo';
-import { AccountMessages } from '../account/account.assets';
 import { TransactionMessages } from './transaction.assets';
-import { BankAccountDto } from '../account/account.dto';
 @Injectable()
 export class TransactionService {
   constructor(
     private readonly transactionRepository: TransactionRepository,
     private readonly accountRepository: AccountRepository,
   ) {}
-  //   async sendMoney(
-  //     sendMoney: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
-  //   ) {
-  //     const phoneSender = await this.accountRepository.getBy(
-  //       null,
-  //       null,
-  //       null,
-  //       sendMoney.sender,
-  //     );
-  //     const phoneReceiver = await this.accountRepository.getBy(
-  //       null,
-  //       null,
-  //       null,
-  //       sendMoney.receiver,
-  //     );
-  //     if (!phoneSender) {
-  //       throw new HttpException(
-  //         AccountMessages.ACCOUNT_SENDER_NOT_FOUND,
-  //         HttpStatus.NOT_FOUND,
-  //       );
-  //     }
-  //     if (!phoneReceiver) {
-  //       throw new HttpException(
-  //         AccountMessages.ACCOUNT_RECEIVER_NOT_FOUND,
-  //         HttpStatus.NOT_FOUND,
-  //       );
-  //     }
-  //     const newTransaction =
-  //       await this.transactionRepository.newTransaction(sendMoney);
-  //     const transaction = await this.accountRepository.addTrasactionToAccounts(
-  //       phoneSender,
-  //       phoneReceiver,
-  //       newTransaction,
-  //     );
-  //     return transaction;
-  //   }
-
-  //   async sendoMoneyViaAccountNumber(
-  //     sendMoney: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
-  //   ) {
-  //     const accountNumberSender = await this.accountRepository.getBy(
-  //       null,
-  //       sendMoney.sender,
-  //       null,
-  //       null,
-  //     );
-
-  //     const accountNumberReceiver = await this.accountRepository.getBy(
-  //       null,
-  //       sendMoney.receiver,
-  //       null,
-  //       null,
-  //     );
-
-  //     if (!accountNumberSender) {
-  //       throw new HttpException(
-  //         AccountMessages.ACCOUNT_SENDER_NOT_FOUND,
-  //         HttpStatus.NOT_FOUND,
-  //       );
-  //     }
-  //     if (!accountNumberReceiver) {
-  //       throw new HttpException(
-  //         AccountMessages.ACCOUNT_RECEIVER_NOT_FOUND,
-  //         HttpStatus.NOT_FOUND,
-  //       );
-  //     }
-  //     const newTransaction =
-  //       await this.transactionRepository.newTransaction(sendMoney);
-  //     const transaction = await this.accountRepository.addTrasactionToAccounts(
-  //       accountNumberSender,
-  //       accountNumberReceiver,
-  //       newTransaction,
-  //     );
-  //     return transaction;
-  //   }
   async sendMoney(
     sendMoneyDto: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
   ) {
@@ -96,75 +19,59 @@ export class TransactionService {
     let receiver;
 
     if (sendMoneyDto instanceof TransactionViaPhoneDto) {
-      const senderAccount = await this.accountRepository.getBy(
-        null,
-        null,
-        null,
-        sendMoneyDto.sender,
+      const senderAccount = await this.accountRepository.getBy({
+        phoneNumber: sendMoneyDto.sender,
+      });
+      const reciverAccount = await this.accountRepository.getBy({
+        phoneNumber: sendMoneyDto.sender,
+      });
+      if (!senderAccount) {
+        throw new HttpException('sender user not found', HttpStatus.NOT_FOUND);
+      }
+      if (!reciverAccount) {
+        throw new HttpException('reciver user not found', HttpStatus.NOT_FOUND);
+      }
+      await this.accountRepository.checkBalance(
+        senderAccount,
+        reciverAccount,
+        sendMoneyDto,
       );
-      const reciverAccount = await this.accountRepository.getBy(
-        null,
-        null,
-        null,
-        sendMoneyDto.sender,
-      );
-      await this.accountRepository.checkBalance(senderAccount, reciverAccount);
-      sender = await this.accountRepository.getBy(
-        null,
-        null,
-        null,
-        sendMoneyDto.sender,
-      );
-      receiver = await this.accountRepository.getBy(
-        null,
-        null,
-        null,
-        sendMoneyDto.receiver,
-      );
+      sender = await this.accountRepository.getBy({
+        phoneNumber: sendMoneyDto.sender,
+      });
+      receiver = await this.accountRepository.getBy({
+        phoneNumber: sendMoneyDto.receiver,
+      });
     } else if (sendMoneyDto instanceof TransactionViaAccountNumberDto) {
-      const senderAccount = await this.accountRepository.getBy(
-        null,
-        sendMoneyDto.sender,
-        null,
-        null,
-      );
-      const reciverAccount = await this.accountRepository.getBy(
-        null,
-        sendMoneyDto.sender,
-        null,
-        null,
-      );
-      await this.accountRepository.checkBalance(senderAccount, reciverAccount);
+      const senderAccount = await this.accountRepository.getBy({
+        accountNumber: sendMoneyDto.sender,
+      });
+      const reciverAccount = await this.accountRepository.getBy({
+        accountNumber: sendMoneyDto.sender,
+      });
+      if (!senderAccount) {
+        throw new HttpException('sender user not found', HttpStatus.NOT_FOUND);
+      }
+      if (!reciverAccount) {
+        throw new HttpException('reciver user not found', HttpStatus.NOT_FOUND);
+      }
 
-      sender = await this.accountRepository.getBy(
-        null,
-        sendMoneyDto.sender,
-        null,
-        null,
+      await this.accountRepository.checkBalance(
+        senderAccount,
+        reciverAccount,
+        sendMoneyDto,
       );
-      receiver = await this.accountRepository.getBy(
-        null,
-        sendMoneyDto.receiver,
-        null,
-        null,
-      );
+
+      sender = await this.accountRepository.getBy({
+        accountNumber: sendMoneyDto.sender,
+      });
+      receiver = await this.accountRepository.getBy({
+        accountNumber: sendMoneyDto.receiver,
+      });
     } else {
       throw new HttpException(
         'Invalid transaction type',
         HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (!sender) {
-      throw new HttpException(
-        AccountMessages.ACCOUNT_SENDER_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    if (!receiver) {
-      throw new HttpException(
-        AccountMessages.ACCOUNT_RECEIVER_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -179,14 +86,23 @@ export class TransactionService {
     return transaction;
   }
 
-  async transactinStatus(
-    transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
-    status: string,
-  ): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
+  async transactinStatus({
+    transaction,
+    status,
+  }: {
+    transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto;
+    status: string;
+  }): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
     transaction.status = status;
 
     const updatedTransaction =
       await this.transactionRepository.updateTransaction(transaction);
+    if (!updatedTransaction) {
+      throw new HttpException(
+        'doesnt  updated',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
     return updatedTransaction;
   }
 
@@ -203,23 +119,20 @@ export class TransactionService {
     return transaction;
   }
 
-  async addTransactionToAccounts(
-    transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
-    status: string = 'pending',
-  ) {
+  async addTransactionToAccounts({
+    transaction,
+    status = 'pending',
+  }: {
+    transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto;
+    status?: string;
+  }) {
     if (transaction instanceof TransactionViaPhoneDto) {
-      const sender = await this.accountRepository.getBy(
-        null,
-        null,
-        null,
-        transaction.sender,
-      );
-      const reciver = await this.accountRepository.getBy(
-        null,
-        null,
-        null,
-        transaction.receiver,
-      );
+      const sender = await this.accountRepository.getBy({
+        phoneNumber: transaction.sender,
+      });
+      const reciver = await this.accountRepository.getBy({
+        phoneNumber: transaction.receiver,
+      });
       if (!sender) {
         throw new HttpException(
           'Sender User Is Not Found',
@@ -229,16 +142,43 @@ export class TransactionService {
       if (!reciver) {
         throw new HttpException(
           'Reciver User Is Not Found',
-          HttpStatus.NOT_FOUND
-        )
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      await this.accountRepository.checkBalance(sender, reciver, transaction);
+      await this.accountRepository.addTransactionToAccounts(
+        sender,
+        reciver,
+        transaction,
+        status,
+      );
     }
-    await this.accountRepository.checkBalance(sender, reciver);
-    await this.accountRepository.addTransactionToAccounts(
-      sender,
-      reciver,
-      transaction,
-      status,
-    );
+    if (transaction instanceof TransactionViaAccountNumberDto) {
+      const sender = await this.accountRepository.getBy({
+        accountNumber: transaction.sender,
+      });
+      const reciver = await this.accountRepository.getBy({
+        accountNumber: transaction.receiver,
+      });
+      if (!sender) {
+        throw new HttpException(
+          'Sender User Is Not Found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (!reciver) {
+        throw new HttpException(
+          'Reciver User Is Not Found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      await this.accountRepository.checkBalance(sender, reciver, transaction);
+      await this.accountRepository.addTransactionToAccounts(
+        sender,
+        reciver,
+        transaction,
+        status,
+      );
+    }
   }
-}
 }
