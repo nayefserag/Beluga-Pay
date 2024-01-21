@@ -29,14 +29,16 @@ export class AccountRepository {
   }
 
   async getBy(filter: {
-    id?: string | Types.ObjectId;
+    _id?: string | Types.ObjectId;
     accountNumber?: string;
     email?: string;
     phoneNumber?: string;
   }): Promise<BankAccountDto | null> {
-    if (filter.id) filter.id = constructObjId(filter.id);
+    if (filter._id) {
+      filter._id = constructObjId(filter._id);
+    }
     const account = await this.accountModel.findOne(filter);
-    console.log('account', {...filter});
+    this.logger.debug('account', { ...filter });
     return account;
   }
 

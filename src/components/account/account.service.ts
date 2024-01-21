@@ -55,17 +55,13 @@ export class AccountService {
 
   async getAccounts(
     filter: {
-      id?: string;
+      _id?: string;
       accountNumber?: string;
       email?: string;
     } = {},
   ) {
-    if(filter.id && !isValidObjectID(filter.id) ){
-      throw new HttpException(
-        'invalid object Id',
-        HttpStatus.BAD_REQUEST
-      )
-
+    if (filter._id && !isValidObjectID(filter._id)) {
+      throw new HttpException('invalid object Id', HttpStatus.BAD_REQUEST);
     }
     const account = await this.accountRepo.getBy(filter);
     if (!account) {
@@ -78,7 +74,7 @@ export class AccountService {
   }
 
   async getAllUserAccounts(email: string) {
-    const user = await this.userRepo.getUserByEmail({email});
+    const user = await this.userRepo.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(
         UserMessages.USER_NOT_FOUND,
@@ -86,12 +82,12 @@ export class AccountService {
       );
     }
 
-    const accounts = await this.accountRepo.getAllUserAccounts({email});
+    const accounts = await this.accountRepo.getAllUserAccounts({ email });
     if (accounts.length === 0) {
       throw new HttpException(
         AccountMessages.User_DOESNT_HAVE_ACCOUNTS,
         HttpStatus.NOT_FOUND,
-      )
+      );
     }
     return accounts;
   }

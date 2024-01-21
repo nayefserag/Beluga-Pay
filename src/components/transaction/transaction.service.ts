@@ -190,7 +190,7 @@ export class TransactionService {
     if (!isValidObjectID(id)) {
       throw new HttpException('Invalid Object ID', HttpStatus.BAD_REQUEST);
     }
-    const user = this.accountRepository.getBy({ id });
+    const user = this.accountRepository.getBy({ _id: id });
     if (!user) {
       throw new HttpException('user Not Found', HttpStatus.NOT_FOUND);
     }
@@ -202,6 +202,6 @@ export class TransactionService {
         HttpStatus.NOT_FOUND,
       );
     }
-    return transactions
+    return transactions;
   }
 }

@@ -29,7 +29,7 @@ export class AccountController {
   @Get('getbyid/:id')
   async get(@Param('id') id: string) {
     const account = await this.accountService.getAccounts({
-      id:id,
+      _id: id,
     });
     return {
       message: 'Accounts fetched successfully',
@@ -69,7 +69,7 @@ export class AccountController {
       message: 'Accounts fetched successfully',
       status: HttpStatus.OK,
       data: account,
-    }
+    };
   }
 
   @Patch('updateaccount/:email')
