@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 
 @Schema()
-export class Transaction  {
-
+export class Transaction {
   @Prop({ required: false })
   via: string;
 
@@ -27,7 +25,6 @@ export class Transaction  {
     enum: ['pending', 'accepted', 'rejected'],
   })
   status: string;
-
 }
 
 export const TransactionSchema = SchemaFactory.createForClass(Transaction);

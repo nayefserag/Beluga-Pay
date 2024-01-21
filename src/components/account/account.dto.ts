@@ -10,7 +10,10 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { TransactionViaAccountNumberDto, TransactionViaPhoneDto } from '../transaction/transaction.dto';
+import {
+  TransactionViaAccountNumberDto,
+  TransactionViaPhoneDto,
+} from '../transaction/transaction.dto';
 
 export class BankAccountDto {
   _id: string;
@@ -65,27 +68,9 @@ export class BankAccountDto {
   })
   @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
   phoneNumber: string;
-
-  @ApiProperty({
-    description: 'Array of transactions',
-    type: [TransactionViaPhoneDto],
-    example: [
-      {
-        description: 'Transaction description',
-        amount: 500,
-        date: '2024-01-18T12:00:00Z',
-        sender: 'nayfserag@gmail.com',
-        receiver: 'john.doe@example.com',
-      },
-    ],
-  })
-  transactions: TransactionViaPhoneDto[];
 }
 
 export class UpdateBankAccountDto {
-
-  
-
   @ApiProperty({
     required: false,
     description: 'The email address of the user',
@@ -117,19 +102,4 @@ export class UpdateBankAccountDto {
   @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
   @IsOptional()
   phoneNumber: string;
-
-  @ApiProperty({
-    description: 'Array of transactions',
-    type: [TransactionViaPhoneDto , TransactionViaAccountNumberDto],
-    example: [
-      {
-        description: 'Transaction description',
-        amount: 500,
-        date: '2024-01-18T12:00:00Z',
-        sender: 'nayfserag@gmail.com',
-        receiver: 'john.doe@example.com',
-      },
-    ],
-  })
-  transactions: TransactionViaPhoneDto[] | TransactionViaAccountNumberDto[];
 }

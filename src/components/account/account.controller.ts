@@ -62,15 +62,15 @@ export class AccountController {
     };
   }
 
-  // @Get('getalluseraccounts/:email')
-  // async getAllUserAccounts(@Param('email') email: string) {
-  //   const account = await this.accountService.getAllUserAccounts(email);
-  //   return {
-  //     message: 'Accounts fetched successfully',
-  //     status: HttpStatus.OK,
-  //     data: account,
-  //   }
-  // }
+  @Get('getalluseraccounts/:email')
+  async getAllUserAccounts(@Param('email') email: string) {
+    const account = await this.accountService.getAllUserAccounts(email);
+    return {
+      message: 'Accounts fetched successfully',
+      status: HttpStatus.OK,
+      data: account,
+    }
+  }
 
   @Patch('updateaccount/:email')
   async updateAccount(

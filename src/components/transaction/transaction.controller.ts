@@ -72,7 +72,12 @@ export class TransactionController {
   }
 
   @Get('My-transactions')
-  async allTranaction(){
-    
+  async allTranaction(@Body() id:string ){
+    const transactions = await this.transactionService.getAllTransactions(id)
+    return {
+      message: TransactionMessages.TRANSACTION_REJECTED,
+      status: HttpStatus.OK,
+      data: transactions,
+    }
   }
 }

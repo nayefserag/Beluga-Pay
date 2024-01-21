@@ -6,6 +6,7 @@ import {
 import { TransactionRepository } from 'src/repos/transaction.repo';
 import { AccountRepository } from 'src/repos/account.repo';
 import { TransactionMessages } from './transaction.assets';
+import { isValidObjectID } from 'src/helpers/idValidator';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -109,6 +110,9 @@ export class TransactionService {
   async getTransactionById(
     id: string,
   ): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
+    if (!isValidObjectID(id)) {
+      throw new HttpException('Invalid Object ID', HttpStatus.BAD_REQUEST);
+    }
     const transaction = await this.transactionRepository.getTransactionById(id);
     if (!transaction) {
       throw new HttpException(
@@ -180,5 +184,24 @@ export class TransactionService {
         status,
       );
     }
+  }
+
+  async getAllTransactions(id: string) {
+    if (!isValidObjectID(id)) {
+      throw new HttpException('Invalid Object ID', HttpStatus.BAD_REQUEST);
+    }
+    const user = this.accountRepository.getBy({ id });
+    if (!user) {
+      throw new HttpException('user Not Found', HttpStatus.NOT_FOUND);
+    }
+    const transactions =
+      await this.transactionRepository.getAllTransactionsForUser(id);
+    if (transactions.length == 0) {
+      throw new HttpException(
+        'You Dont Have Any Transactions',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return transactions
   }
 }

@@ -3,7 +3,6 @@ import { Transaction } from './transaction.schema';
 
 @Schema()
 export class Account {
-
   @Prop({ required: true })
   email: string;
 
@@ -22,12 +21,8 @@ export class Account {
   @Prop({ required: true, min: 0 })
   balance: number;
 
-  @Prop() 
+  @Prop()
   phoneNumber: string;
-
-  @Prop({ type: [{ type: Transaction }] })
-  transactions: Transaction[];
-
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

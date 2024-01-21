@@ -11,6 +11,7 @@ import {
   TransactionViaPhoneDto,
 } from 'src/components/transaction/transaction.dto';
 import { UserRepository } from 'src/repos/user.repo';
+import { TransactionRepository } from './transaction.repo';
 
 @Injectable()
 export class AccountRepository {
@@ -18,6 +19,7 @@ export class AccountRepository {
   constructor(
     @InjectModel('account') private accountModel: Model<BankAccountDto>,
     private readonly UserRepository: UserRepository,
+    private readonly transactionRepository:TransactionRepository
   ) {}
 
   async createAccount(account: BankAccountDto): Promise<BankAccountDto> {
@@ -38,9 +40,9 @@ export class AccountRepository {
     return account;
   }
 
-  // async getAllUserAccounts(email: string): Promise<BankAccountDto[]> {
-  //   return await this.accountModel.find({email});
-  // }
+  async getAllUserAccounts({ email }: { email: string; }): Promise<BankAccountDto[]> {
+    return await this.accountModel.find({email});
+  }
 
   async updateAccount(
     accountUpdate: UpdateBankAccountDto,
@@ -77,7 +79,8 @@ export class AccountRepository {
         HttpStatus.NOT_FOUND,
       );
     }
-    if (account.transactions.length > 0) {
+    const transactions = await this.transactionRepository.getAllTransactionsForUser(email)
+    if (transactions.length > 0) {
       throw new HttpException(
         AccountMessages.ACCOUNT_HAS_TRANSACTIONS,
         HttpStatus.FORBIDDEN,

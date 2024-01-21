@@ -69,24 +69,24 @@ export class AccountService {
     return account;
   }
 
-  // async getAllUserAccounts(email: string) {
-  //   const user = await this.userRepo.getUserByEmail(email);
-  //   if (!user) {
-  //     throw new HttpException(
-  //       UserMessages.USER_NOT_FOUND,
-  //       HttpStatus.NOT_FOUND,
-  //     );
-  //   }
+  async getAllUserAccounts(email: string) {
+    const user = await this.userRepo.getUserByEmail({email});
+    if (!user) {
+      throw new HttpException(
+        UserMessages.USER_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-  //   const accounts = await this.accountRepo.getAllUserAccounts(email);
-  //   if (accounts.length === 0) {
-  //     throw new HttpException(
-  //       AccountMessages.User_DOESNT_HAVE_ACCOUNTS,
-  //       HttpStatus.NOT_FOUND,
-  //     )
-  //   }
-  //   return accounts;
-  // }
+    const accounts = await this.accountRepo.getAllUserAccounts({email});
+    if (accounts.length === 0) {
+      throw new HttpException(
+        AccountMessages.User_DOESNT_HAVE_ACCOUNTS,
+        HttpStatus.NOT_FOUND,
+      )
+    }
+    return accounts;
+  }
 
   async updateAccount(account: UpdateBankAccountDto, email: string) {
     if (!account) {
