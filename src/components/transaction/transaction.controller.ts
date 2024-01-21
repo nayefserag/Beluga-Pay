@@ -36,8 +36,9 @@ export class TransactionController {
   @Patch('accept-transaction')
   async acceptTransaction(@Body() data: string) {
     const transaction = await this.transactionService.getTransactionById(data);
-    await this.transactionService.transactinStatus(transaction, 'acepted');
-    
+    const transactionUpdatedStatus =await this.transactionService.transactinStatus(transaction, 'accepted');
+      await this.transactionService.addTransactionToAccounts(transactionUpdatedStatus,'accepted')
+
     return {
       message: TransactionMessages.TRANSACTION_UPDATED,
       status: HttpStatus.OK,
@@ -45,17 +46,17 @@ export class TransactionController {
     };
   }
 
-  @Patch('reject-transaction')
-  async rejectTransaction(@Body() data: string) {
-    const transaction = await this.transactionService.getTransactionById(data);
-    const transactionUpdated = await this.transactionService.transactinStatus(transaction, 'rejected');
+  // @Patch('reject-transaction')
+  // async rejectTransaction(@Body() data: string) {
+  //   const transaction = await this.transactionService.getTransactionById(data);
+  //   const transactionUpdated = await this.transactionService.transactinStatus(transaction, 'rejected');
     
-    const addedTransaction = await this.transactionService.addTransactionToAccounts(transaction.sender, transaction.receiver, transactionUpdated); 
-    return {
-      message: TransactionMessages.TRANSACTION_REJECTED,
-      status: HttpStatus.OK,
-      data: transaction,
-    }
-  }
+  //   const addedTransaction = await this.transactionService.addTransactionToAccounts(transaction.sender, transaction.receiver, transactionUpdated); 
+  //   return {
+  //     message: TransactionMessages.TRANSACTION_REJECTED,
+  //     status: HttpStatus.OK,
+  //     data: transaction,
+  //   }
+  // }
 
 }

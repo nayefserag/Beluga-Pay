@@ -92,14 +92,23 @@ export class TransactionService {
   async sendMoney(
     sendMoneyDto: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
   ) {
-    await this.accountRepository.checkBalance(
-      sendMoneyDto.sender,
-      sendMoneyDto.receiver,
-    )
     let sender;
     let receiver;
 
     if (sendMoneyDto instanceof TransactionViaPhoneDto) {
+      const senderAccount = await this.accountRepository.getBy(
+        null,
+        null,
+        null,
+        sendMoneyDto.sender,
+      );
+      const reciverAccount = await this.accountRepository.getBy(
+        null,
+        null,
+        null,
+        sendMoneyDto.sender,
+      );
+      await this.accountRepository.checkBalance(senderAccount, reciverAccount);
       sender = await this.accountRepository.getBy(
         null,
         null,
@@ -113,6 +122,20 @@ export class TransactionService {
         sendMoneyDto.receiver,
       );
     } else if (sendMoneyDto instanceof TransactionViaAccountNumberDto) {
+      const senderAccount = await this.accountRepository.getBy(
+        null,
+        sendMoneyDto.sender,
+        null,
+        null,
+      );
+      const reciverAccount = await this.accountRepository.getBy(
+        null,
+        sendMoneyDto.sender,
+        null,
+        null,
+      );
+      await this.accountRepository.checkBalance(senderAccount, reciverAccount);
+
       sender = await this.accountRepository.getBy(
         null,
         sendMoneyDto.sender,
@@ -151,10 +174,7 @@ export class TransactionService {
       sender,
       receiver,
       newTransaction,
-      
     );
-
-    
 
     return transaction;
   }
@@ -162,8 +182,7 @@ export class TransactionService {
   async transactinStatus(
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
     status: string,
-  ) {
-
+  ): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
     transaction.status = status;
 
     const updatedTransaction =
@@ -171,32 +190,55 @@ export class TransactionService {
     return updatedTransaction;
   }
 
-  async getTransactionById(id: string): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
-    const transaction = await this.transactionRepository.getTransactionById(
-      id,
-    )
+  async getTransactionById(
+    id: string,
+  ): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
+    const transaction = await this.transactionRepository.getTransactionById(id);
     if (!transaction) {
       throw new HttpException(
         TransactionMessages.TRANSACTION_NOT_FOUND,
         HttpStatus.NOT_FOUND,
-      )
+      );
     }
-    return transaction
+    return transaction;
   }
 
   async addTransactionToAccounts(
-    sender: BankAccountDto,
-    recipient: BankAccountDto,
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
     status: string = 'pending',
-  ){
-    await this.accountRepository.checkBalance(sender, recipient);
-    await this.accountRepository.addTransactionToAccounts(
-        sender,
-        recipient,
-        transaction,
-        status
+  ) {
+    if (transaction instanceof TransactionViaPhoneDto) {
+      const sender = await this.accountRepository.getBy(
+        null,
+        null,
+        null,
+        transaction.sender,
       );
+      const reciver = await this.accountRepository.getBy(
+        null,
+        null,
+        null,
+        transaction.receiver,
+      );
+      if (!sender) {
+        throw new HttpException(
+          'Sender User Is Not Found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (!reciver) {
+        throw new HttpException(
+          'Reciver User Is Not Found',
+          HttpStatus.NOT_FOUND
+        )
+    }
+    await this.accountRepository.checkBalance(sender, reciver);
+    await this.accountRepository.addTransactionToAccounts(
+      sender,
+      reciver,
+      transaction,
+      status,
+    );
   }
-
+}
 }
