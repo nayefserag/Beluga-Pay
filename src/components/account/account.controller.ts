@@ -29,7 +29,7 @@ export class AccountController {
   @Get('getbyid/:id')
   async get(@Param('id') id: string) {
     const account = await this.accountService.getAccounts({
-      id,
+      id:id,
     });
     return {
       message: 'Accounts fetched successfully',

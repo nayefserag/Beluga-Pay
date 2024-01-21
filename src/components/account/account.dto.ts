@@ -10,10 +10,6 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import {
-  TransactionViaAccountNumberDto,
-  TransactionViaPhoneDto,
-} from '../transaction/transaction.dto';
 
 export class BankAccountDto {
   _id: string;

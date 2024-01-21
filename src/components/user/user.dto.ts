@@ -1,4 +1,3 @@
-import { Prop } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -7,10 +6,7 @@ import {
   IsEmail,
   IsStrongPassword,
   IsArray,
-  ValidateNested,
 } from 'class-validator';
-import { BankAccountDto } from '../account/account.dto';
-import { Type } from 'class-transformer';
 
 export class UserDto {
   @ApiProperty({
@@ -43,14 +39,11 @@ export class UserDto {
 
   @ApiProperty({
     required: false,
-    type: [BankAccountDto],
-    description: 'List of bank accounts',
+    description: 'List of bank account IDs',
   })
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => BankAccountDto)
-  accounts: BankAccountDto[];
+  accounts: string[];
 }
 
 export class UpdateUserDto {
@@ -86,14 +79,11 @@ export class UpdateUserDto {
 
   @ApiProperty({
     required: false,
-    type: [BankAccountDto],
-    description: 'List of bank accounts',
+    description: 'List of bank account IDs',
   })
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => BankAccountDto)
-  accounts: BankAccountDto[];
+  accounts: string[];
 }
 
 export class UserPasswordDto {

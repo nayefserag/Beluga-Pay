@@ -5,6 +5,7 @@ import { UserRepository } from 'src/repos/user.repo';
 import { AccountMessages } from './account.assets';
 import { UserMessages } from '../user/user.assets';
 import { generateAccountNumber } from 'src/helpers/numbergenerator';
+import { isValidObjectID } from 'src/helpers/idValidator';
 @Injectable()
 export class AccountService {
   private readonly logger = new Logger(AccountService.name);
@@ -59,6 +60,13 @@ export class AccountService {
       email?: string;
     } = {},
   ) {
+    if(filter.id && !isValidObjectID(filter.id) ){
+      throw new HttpException(
+        'invalid object Id',
+        HttpStatus.BAD_REQUEST
+      )
+
+    }
     const account = await this.accountRepo.getBy(filter);
     if (!account) {
       throw new HttpException(

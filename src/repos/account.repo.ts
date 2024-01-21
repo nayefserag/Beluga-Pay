@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { AccountMessages } from 'src/components/account/account.assets';
 import {
   BankAccountDto,
@@ -12,6 +12,7 @@ import {
 } from 'src/components/transaction/transaction.dto';
 import { UserRepository } from 'src/repos/user.repo';
 import { TransactionRepository } from './transaction.repo';
+import { constructObjId } from 'src/helpers/idValidator';
 
 @Injectable()
 export class AccountRepository {
@@ -19,7 +20,7 @@ export class AccountRepository {
   constructor(
     @InjectModel('account') private accountModel: Model<BankAccountDto>,
     private readonly UserRepository: UserRepository,
-    private readonly transactionRepository:TransactionRepository
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   async createAccount(account: BankAccountDto): Promise<BankAccountDto> {
@@ -27,21 +28,24 @@ export class AccountRepository {
     return newAccount;
   }
 
-  async getBy(
-    filter: {
-      id?: string;
-      accountNumber?: string;
-      email?: string;
-      phoneNumber?: string;
-    } = {},
-  ): Promise<BankAccountDto | null> {
-    this.logger.debug(filter);
-    const account = this.accountModel.findOne(filter);
+  async getBy(filter: {
+    id?: string | Types.ObjectId;
+    accountNumber?: string;
+    email?: string;
+    phoneNumber?: string;
+  }): Promise<BankAccountDto | null> {
+    if (filter.id) filter.id = constructObjId(filter.id);
+    const account = await this.accountModel.findOne(filter);
+    console.log('account', {...filter});
     return account;
   }
 
-  async getAllUserAccounts({ email }: { email: string; }): Promise<BankAccountDto[]> {
-    return await this.accountModel.find({email});
+  async getAllUserAccounts({
+    email,
+  }: {
+    email: string;
+  }): Promise<BankAccountDto[]> {
+    return await this.accountModel.find({ email });
   }
 
   async updateAccount(
@@ -79,7 +83,8 @@ export class AccountRepository {
         HttpStatus.NOT_FOUND,
       );
     }
-    const transactions = await this.transactionRepository.getAllTransactionsForUser(email)
+    const transactions =
+      await this.transactionRepository.getAllTransactionsForUser(email);
     if (transactions.length > 0) {
       throw new HttpException(
         AccountMessages.ACCOUNT_HAS_TRANSACTIONS,
@@ -94,23 +99,20 @@ export class AccountRepository {
   }
 
   async checkBalance(
-    senderAccount: BankAccountDto ,
+    senderAccount: BankAccountDto,
     recipientAccount: BankAccountDto,
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
-  ):Promise<Boolean> {
+  ): Promise<Boolean> {
     if (senderAccount.accountNumber === recipientAccount.accountNumber) {
       throw new HttpException(
         'Sender and recipient cannot be the same account',
         HttpStatus.BAD_REQUEST,
       );
-      
     }
     if (senderAccount.balance < transaction.amount) {
-      return false
+      return false;
     }
-    return true
-
-
+    return true;
   }
 
   async addTransactionToAccounts(
@@ -119,7 +121,7 @@ export class AccountRepository {
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
     status: string = 'pending',
   ) {
-    await this.checkBalance(senderAccount, recipientAccount ,transaction );
+    await this.checkBalance(senderAccount, recipientAccount, transaction);
     if (status === 'accepted') {
       if (senderAccount.balance < transaction.amount) {
         throw new HttpException(
