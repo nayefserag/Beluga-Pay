@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import { Bill } from 'src/Schema/bill.schema';
 
 import { CreateBillDto } from 'src/components/bills/dto/create-bill.dto';
-import { SearchBillsDto } from 'src/components/bills/dto/search-bill.dto';
 import { UpdateBillDto } from 'src/components/bills/dto/update-bill.dto';
 @Injectable()
 export class BillRepository {
@@ -31,9 +31,9 @@ export class BillRepository {
   }
 
   async getAllBillsForUser(
-    filter: SearchBillsDto,
+    filter: FilterQuery<Bill>,
   ): Promise<Array<UpdateBillDto>> {
-    const bills = await this.billModel.find(filter );
+    const bills = await this.billModel.find(filter);
     return bills;
   }
 }

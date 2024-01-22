@@ -6,6 +6,7 @@ import { generator } from 'src/helpers/numbergenerator';
 import { BillMessages } from '../bills/bill.assets';
 import { AccountRepository } from 'src/repos/account.repo';
 import { AccountMessages } from '../account/account.assets';
+import { SearchBillsDto } from './dto/search-bill.dto';
 
 @Injectable()
 export class BillsService {
@@ -25,10 +26,7 @@ export class BillsService {
     return newBill;
   }
 
-  async findAll(filter: {
-    customerAccountNumber?: string;
-    customerPhone?: string;
-  }): Promise<UpdateBillDto[]> {
+  async findAll(filter: SearchBillsDto): Promise<UpdateBillDto[]> {
     const bills = await this.billrepo.getAllBillsForUser(filter);
     if (bills.length == 0) {
       throw new HttpException(BillMessages.NO_BILLS, HttpStatus.NOT_FOUND);

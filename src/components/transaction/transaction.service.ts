@@ -207,7 +207,7 @@ export class TransactionService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const user = this.accountRepository.getBy({ _id: id });
+    const user = this.accountRepository.getBy({ _id: id }, { _id: true });
     if (!user) {
       throw new HttpException(
         UserMessages.USER_NOT_FOUND,

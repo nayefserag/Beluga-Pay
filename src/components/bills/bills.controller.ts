@@ -14,7 +14,13 @@ import { isValidObjectID } from 'src/helpers/idValidator';
 import { SearchBillsDto } from './dto/search-bill.dto';
 import { BillMessages } from './bill.assets';
 import { AccountMessages } from '../account/account.assets';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 @Controller('bills')
 @ApiTags('bills')
 export class BillsController {
@@ -33,11 +39,11 @@ export class BillsController {
     };
   }
 
-  @Get('mybills')
+  @Get()
   @ApiOperation({ summary: 'Find all bills based on filter' })
   @ApiResponse({ status: 200, description: 'List of bills.' })
   @ApiBody({ type: SearchBillsDto })
-  findAll(@Body() filter: SearchBillsDto) {
+  async findAll(@Body() filter: SearchBillsDto) {
     const { customerAccountNumber, customerPhone } = filter;
 
     if (!customerAccountNumber && !customerPhone) {
@@ -46,7 +52,7 @@ export class BillsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const bills = this.billsService.findAll(filter);
+    const bills = await this.billsService.findAll(filter);
 
     return {
       message: BillMessages.YOUR_BILLS,
@@ -55,7 +61,7 @@ export class BillsController {
     };
   }
 
-  @Get('bill/:billId')
+  @Get('/:billId')
   @ApiOperation({ summary: 'Find a bill by ID' })
   @ApiResponse({ status: 200, description: 'Details of the bill.' })
   @ApiParam({ name: 'billId', description: 'ID of the bill' })
@@ -77,7 +83,6 @@ export class BillsController {
   @ApiResponse({ status: 200, description: 'Bill payment success.' })
   @ApiParam({ name: 'id', description: 'ID of the bill to be paid' })
   @ApiBody({ type: String, description: 'Account ID for payment' })
-  
   async payBill(@Param('id') id: string, @Body('accountId') accountId: string) {
     const validBill = isValidObjectID(id);
     if (!validBill) {

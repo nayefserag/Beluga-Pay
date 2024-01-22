@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, ProjectionType, Types } from 'mongoose';
 import { AccountMessages } from 'src/components/account/account.assets';
 import { CreateBankAccountDto } from 'src/components/account/dto/create-account';
 import { UpdateBankAccountDto } from 'src/components/account/dto/update-account';
@@ -9,6 +9,7 @@ import { TransactionViaPhoneDto } from 'src/components/transaction/dto/create-tr
 import { UserRepository } from 'src/repos/user.repo';
 import { TransactionRepository } from './transaction.repo';
 import { constructObjId } from 'src/helpers/idValidator';
+import { Account } from 'src/Schema/account.schema';
 
 @Injectable()
 export class AccountRepository {
@@ -26,16 +27,14 @@ export class AccountRepository {
     return newAccount;
   }
 
-  async getBy(filter: {
-    _id?: string | Types.ObjectId;
-    accountNumber?: string;
-    email?: string;
-    phoneNumber?: string;
-  }): Promise<CreateBankAccountDto | null> {
+  async getBy(
+    filter: FilterQuery<Account>,
+    select: ProjectionType<Account> = {},
+  ): Promise<CreateBankAccountDto | null> {
     if (filter._id) {
       filter._id = constructObjId(filter._id);
     }
-    const account = await this.accountModel.findOne(filter);
+    const account = await this.accountModel.findOne(filter, select, {}).exec();
     return account;
   }
 
@@ -62,7 +61,7 @@ export class AccountRepository {
       { email: email },
       accountUpdate,
       { new: true },
-    );
+    ).exec();
 
     if (!updatedAccount) {
       throw new HttpException(
