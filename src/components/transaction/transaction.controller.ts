@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpStatus, Patch, Post } from '@nestjs/common';
 import {
   TransactionViaPhoneDto,
   TransactionViaAccountNumberDto,
-} from './transaction.dto';
+} from './dto/transaction.dto';
 import { TransactionService } from './transaction.service';
 import { TransactionMessages } from './transaction.assets';
 
@@ -57,27 +57,28 @@ export class TransactionController {
   async rejectTransaction(@Body() data: string) {
     const transaction = await this.transactionService.getTransactionById(data);
     const transactionUpdated = await this.transactionService.transactinStatus({
-      transaction , status :'rejected'
+      transaction,
+      status: 'rejected',
     });
 
     await this.transactionService.addTransactionToAccounts({
-      transaction : transactionUpdated,
-      status : 'rejected'
+      transaction: transactionUpdated,
+      status: 'rejected',
     });
     return {
       message: TransactionMessages.TRANSACTION_REJECTED,
       status: HttpStatus.OK,
       data: transaction,
-    }
+    };
   }
 
   @Get('My-transactions')
-  async allTranaction(@Body() id:string ){
-    const transactions = await this.transactionService.getAllTransactions(id)
+  async allTranaction(@Body() id: string) {
+    const transactions = await this.transactionService.getAllTransactions(id);
     return {
       message: TransactionMessages.TRANSACTION_REJECTED,
       status: HttpStatus.OK,
       data: transactions,
-    }
+    };
   }
 }

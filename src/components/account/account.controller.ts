@@ -10,7 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { BankAccountDto, UpdateBankAccountDto } from './account.dto';
+import { BankAccountDto, UpdateBankAccountDto } from './dto/account.dto';
 import { AccountMessages } from './account.assets';
 
 @Controller('account')

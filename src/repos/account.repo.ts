@@ -5,11 +5,11 @@ import { AccountMessages } from 'src/components/account/account.assets';
 import {
   BankAccountDto,
   UpdateBankAccountDto,
-} from 'src/components/account/account.dto';
+} from 'src/components/account/dto/account.dto';
 import {
   TransactionViaAccountNumberDto,
   TransactionViaPhoneDto,
-} from 'src/components/transaction/transaction.dto';
+} from 'src/components/transaction/dto/transaction.dto';
 import { UserRepository } from 'src/repos/user.repo';
 import { TransactionRepository } from './transaction.repo';
 import { constructObjId } from 'src/helpers/idValidator';
@@ -38,7 +38,6 @@ export class AccountRepository {
       filter._id = constructObjId(filter._id);
     }
     const account = await this.accountModel.findOne(filter);
-    this.logger.debug('account', { ...filter });
     return account;
   }
 

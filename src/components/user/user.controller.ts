@@ -15,7 +15,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserMessages } from 'src/components/user/user.assets';
-import { EmailDto, UpdateUserDto, UserDto } from 'src/components/user/user.dto';
+import {
+  EmailDto,
+  UpdateUserDto,
+  UserDto,
+} from 'src/components/user/dto/user.dto';
 import { UserService } from './user.service';
 import { HttpException } from '@nestjs/common';
 

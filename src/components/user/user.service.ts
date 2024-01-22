@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserMessages } from 'src/components/user/user.assets';
-import { UserDto } from 'src/components/user/user.dto';
+import { UserDto } from 'src/components/user/dto/user.dto';
 import { UserRepository } from '../../repos/user.repo';
 import { Password } from 'src/helpers/password';
 
@@ -24,7 +24,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(user: UserDto): Promise<UserDto|null> {
+  async updateUser(user: UserDto): Promise<UserDto | null> {
     const exist = await this.UserRepository.getUserByEmail({
       email: user.email,
     });
@@ -63,7 +63,7 @@ export class UserService {
 
   async deleteUser(email: string): Promise<Boolean | null> {
     const userOrError = await this.UserRepository.getUserByEmail({ email });
-    if (!userOrError){
+    if (!userOrError) {
       throw new HttpException(
         UserMessages.USER_NOT_FOUND,
         HttpStatus.NOT_FOUND,

@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { BankAccountDto } from 'src/components/account/account.dto';
+import { BankAccountDto } from 'src/components/account/dto/account.dto';
 import {
   TransactionViaAccountNumberDto,
   TransactionViaPhoneDto,
-} from 'src/components/transaction/transaction.dto';
-import { UserDto } from 'src/components/user/user.dto';
+} from 'src/components/transaction/dto/transaction.dto';
+import { UserDto } from 'src/components/user/dto/user.dto';
 
 @Injectable()
 export class TransactionRepository {
@@ -21,7 +21,6 @@ export class TransactionRepository {
   async newTransaction(
     sendMoneyDto: TransactionViaPhoneDto,
   ): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
-    sendMoneyDto.status = 'pending';
     const newTransaction = await this.transactionModel.create(sendMoneyDto);
     return newTransaction;
   }
@@ -50,8 +49,6 @@ export class TransactionRepository {
     const transactions = await this.transactionModel.find({
       $or: [{ 'sender.userId': userId }, { 'receiver.userId': userId }],
     });
-    console.log(transactions);
-    console.log(typeof transactions);
     return transactions;
   }
 }

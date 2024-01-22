@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   TransactionViaAccountNumberDto,
   TransactionViaPhoneDto,
-} from './transaction.dto';
+} from './dto/transaction.dto';
 import { TransactionRepository } from 'src/repos/transaction.repo';
 import { AccountRepository } from 'src/repos/account.repo';
 import { TransactionMessages } from './transaction.assets';

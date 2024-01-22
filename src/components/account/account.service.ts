@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { AccountRepository } from 'src/repos/account.repo';
-import { BankAccountDto, UpdateBankAccountDto } from './account.dto';
+import { BankAccountDto, UpdateBankAccountDto } from './dto/account.dto';
 import { UserRepository } from 'src/repos/user.repo';
 import { AccountMessages } from './account.assets';
 import { UserMessages } from '../user/user.assets';
