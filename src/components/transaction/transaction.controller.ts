@@ -1,8 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Patch, Post } from '@nestjs/common';
-import {
-  TransactionViaPhoneDto,
-  TransactionViaAccountNumberDto,
-} from './dto/transaction.dto';
+import { TransactionViaAccountNumberDto } from './dto/create-transaction-via-account-number';
+import { TransactionViaPhoneDto } from './dto/create-transaction-via-phone-number';
 import { TransactionService } from './transaction.service';
 import { TransactionMessages } from './transaction.assets';
 

@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  TransactionViaAccountNumberDto,
-  TransactionViaPhoneDto,
-} from './dto/transaction.dto';
+import { TransactionViaAccountNumberDto } from './dto/create-transaction-via-account-number';
+import { TransactionViaPhoneDto } from './dto/create-transaction-via-phone-number';
 import { TransactionRepository } from 'src/repos/transaction.repo';
 import { AccountRepository } from 'src/repos/account.repo';
 import { TransactionMessages } from './transaction.assets';
 import { isValidObjectID } from 'src/helpers/idValidator';
+import { UserMessages } from '../user/user.assets';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -27,10 +26,16 @@ export class TransactionService {
         phoneNumber: sendMoneyDto.sender,
       });
       if (!senderAccount) {
-        throw new HttpException('sender user not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          UserMessages.SENDER_USER_NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+        );
       }
       if (!reciverAccount) {
-        throw new HttpException('reciver user not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          UserMessages.RECIVER_USER_NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+        );
       }
       await this.accountRepository.checkBalance(
         senderAccount,
@@ -51,10 +56,16 @@ export class TransactionService {
         accountNumber: sendMoneyDto.sender,
       });
       if (!senderAccount) {
-        throw new HttpException('sender user not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          UserMessages.SENDER_USER_NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+        );
       }
       if (!reciverAccount) {
-        throw new HttpException('reciver user not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          UserMessages.RECIVER_USER_NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       await this.accountRepository.checkBalance(
@@ -71,7 +82,7 @@ export class TransactionService {
       });
     } else {
       throw new HttpException(
-        'Invalid transaction type',
+        TransactionMessages.INVALID_TYPE,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -100,7 +111,7 @@ export class TransactionService {
       await this.transactionRepository.updateTransaction(transaction);
     if (!updatedTransaction) {
       throw new HttpException(
-        'doesnt  updated',
+        TransactionMessages.TRANSACTION_NOT_UPDATED,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -111,7 +122,10 @@ export class TransactionService {
     id: string,
   ): Promise<TransactionViaPhoneDto | TransactionViaAccountNumberDto> {
     if (!isValidObjectID(id)) {
-      throw new HttpException('Invalid Object ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        TransactionMessages.INVALID_TRANSACTION_ID,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const transaction = await this.transactionRepository.getTransactionById(id);
     if (!transaction) {
@@ -139,13 +153,13 @@ export class TransactionService {
       });
       if (!sender) {
         throw new HttpException(
-          'Sender User Is Not Found',
+          UserMessages.SENDER_USER_NOT_FOUND,
           HttpStatus.NOT_FOUND,
         );
       }
       if (!reciver) {
         throw new HttpException(
-          'Reciver User Is Not Found',
+          UserMessages.RECIVER_USER_NOT_FOUND,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -166,13 +180,13 @@ export class TransactionService {
       });
       if (!sender) {
         throw new HttpException(
-          'Sender User Is Not Found',
+          UserMessages.SENDER_USER_NOT_FOUND,
           HttpStatus.NOT_FOUND,
         );
       }
       if (!reciver) {
         throw new HttpException(
-          'Reciver User Is Not Found',
+          UserMessages.RECIVER_USER_NOT_FOUND,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -188,17 +202,23 @@ export class TransactionService {
 
   async getAllTransactions(id: string) {
     if (!isValidObjectID(id)) {
-      throw new HttpException('Invalid Object ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        UserMessages.INVALID_USER_ID,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const user = this.accountRepository.getBy({ _id: id });
     if (!user) {
-      throw new HttpException('user Not Found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        UserMessages.USER_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
     }
     const transactions =
       await this.transactionRepository.getAllTransactionsForUser(id);
     if (transactions.length == 0) {
       throw new HttpException(
-        'You Dont Have Any Transactions',
+        TransactionMessages.TRANSACTION_ZERO,
         HttpStatus.NOT_FOUND,
       );
     }

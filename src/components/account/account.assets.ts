@@ -18,4 +18,5 @@ export const AccountMessages = {
   ACCOUNT_HAS_TRANSACTIONS: 'This account has transactions and cant be deleted',
   ACCOUNT_SENDER_NOT_FOUND: 'Account Sender Not Found',
   ACCOUNT_RECEIVER_NOT_FOUND: 'Account Receiver Not Found',
+  INVALID_OBJECT_ID: 'Invalid Object Id',
 };

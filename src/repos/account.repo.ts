@@ -2,14 +2,10 @@ import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { AccountMessages } from 'src/components/account/account.assets';
-import {
-  BankAccountDto,
-  UpdateBankAccountDto,
-} from 'src/components/account/dto/account.dto';
-import {
-  TransactionViaAccountNumberDto,
-  TransactionViaPhoneDto,
-} from 'src/components/transaction/dto/transaction.dto';
+import { CreateBankAccountDto } from 'src/components/account/dto/create-account';
+import { UpdateBankAccountDto } from 'src/components/account/dto/update-account';
+import { TransactionViaAccountNumberDto } from 'src/components/transaction/dto/create-transaction-via-account-number';
+import { TransactionViaPhoneDto } from 'src/components/transaction/dto/create-transaction-via-phone-number';
 import { UserRepository } from 'src/repos/user.repo';
 import { TransactionRepository } from './transaction.repo';
 import { constructObjId } from 'src/helpers/idValidator';
@@ -18,12 +14,14 @@ import { constructObjId } from 'src/helpers/idValidator';
 export class AccountRepository {
   private readonly logger = new Logger(AccountRepository.name);
   constructor(
-    @InjectModel('account') private accountModel: Model<BankAccountDto>,
+    @InjectModel('account') private accountModel: Model<CreateBankAccountDto>,
     private readonly UserRepository: UserRepository,
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  async createAccount(account: BankAccountDto): Promise<BankAccountDto> {
+  async createAccount(
+    account: CreateBankAccountDto,
+  ): Promise<CreateBankAccountDto> {
     const newAccount = await this.accountModel.create(account);
     return newAccount;
   }
@@ -33,7 +31,7 @@ export class AccountRepository {
     accountNumber?: string;
     email?: string;
     phoneNumber?: string;
-  }): Promise<BankAccountDto | null> {
+  }): Promise<CreateBankAccountDto | null> {
     if (filter._id) {
       filter._id = constructObjId(filter._id);
     }
@@ -45,7 +43,7 @@ export class AccountRepository {
     email,
   }: {
     email: string;
-  }): Promise<BankAccountDto[]> {
+  }): Promise<CreateBankAccountDto[]> {
     return await this.accountModel.find({ email });
   }
 
@@ -100,8 +98,8 @@ export class AccountRepository {
   }
 
   async checkBalance(
-    senderAccount: BankAccountDto,
-    recipientAccount: BankAccountDto,
+    senderAccount: CreateBankAccountDto,
+    recipientAccount: CreateBankAccountDto,
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
   ): Promise<Boolean> {
     if (senderAccount.accountNumber === recipientAccount.accountNumber) {
@@ -117,8 +115,8 @@ export class AccountRepository {
   }
 
   async addTransactionToAccounts(
-    senderAccount: BankAccountDto,
-    recipientAccount: BankAccountDto,
+    senderAccount: CreateBankAccountDto,
+    recipientAccount: CreateBankAccountDto,
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
     status: string = 'pending',
   ) {

@@ -10,71 +10,89 @@ import {
 } from '@nestjs/common';
 import { BillsService } from './bills.service';
 import { CreateBillDto } from './dto/create-bill.dto';
-import { UpdateBillDto } from './dto/update-bill.dto';
 import { isValidObjectID } from 'src/helpers/idValidator';
 import { SearchBillsDto } from './dto/search-bill.dto';
-
+import { BillMessages } from './bill.assets';
+import { AccountMessages } from '../account/account.assets';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 @Controller('bills')
+@ApiTags('bills')
 export class BillsController {
   constructor(private readonly billsService: BillsService) {}
 
   @Post('create')
+  @ApiOperation({ summary: 'Create a new bill' })
+  @ApiResponse({ status: 201, description: 'Bill successfully created.' })
+  @ApiBody({ type: CreateBillDto })
   async create(@Body() createBillDto: CreateBillDto) {
     const bill = await this.billsService.create(createBillDto);
     return {
-      message: 'Bill Created Successfully',
+      message: BillMessages.BILL_CREATED,
       status: HttpStatus.CREATED,
       data: bill,
     };
   }
 
   @Get('mybills')
+  @ApiOperation({ summary: 'Find all bills based on filter' })
+  @ApiResponse({ status: 200, description: 'List of bills.' })
+  @ApiBody({ type: SearchBillsDto })
   findAll(@Body() filter: SearchBillsDto) {
     const { customerAccountNumber, customerPhone } = filter;
 
     if (!customerAccountNumber && !customerPhone) {
       throw new HttpException(
-        'Please provide at least one of customerPhone or customerAccountNumber',
+        BillMessages.ERROR_FILTER,
         HttpStatus.BAD_REQUEST,
       );
     }
     const bills = this.billsService.findAll(filter);
 
     return {
-      message: 'here Is Your Bills ',
+      message: BillMessages.YOUR_BILLS,
       status: HttpStatus.OK,
       bills: bills,
     };
   }
 
   @Get('bill/:billId')
+  @ApiOperation({ summary: 'Find a bill by ID' })
+  @ApiResponse({ status: 200, description: 'Details of the bill.' })
+  @ApiParam({ name: 'billId', description: 'ID of the bill' })
   findOne(@Param('billId') billId: string) {
     const valid = isValidObjectID(billId);
     if (!valid) {
-      throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException(BillMessages.INVALID_ID, HttpStatus.BAD_REQUEST);
     }
     const bill = this.billsService.findOne(billId);
     return {
-      message: 'here Is Your Bill ',
+      message: BillMessages.YOUR_BILL,
       status: HttpStatus.OK,
       bills: bill,
     };
   }
 
   @Patch('payBill/:id')
-  payBill(@Param('id') id: string, @Body() accountId: string) {
-    // valid objId Bill
+  @ApiOperation({ summary: 'Pay a bill' })
+  @ApiResponse({ status: 200, description: 'Bill payment success.' })
+  @ApiParam({ name: 'id', description: 'ID of the bill to be paid' })
+  @ApiBody({ type: String, description: 'Account ID for payment' })
+  
+  async payBill(@Param('id') id: string, @Body('accountId') accountId: string) {
     const validBill = isValidObjectID(id);
     if (!validBill) {
-      throw new HttpException('Invalid Bill ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException(BillMessages.INVALID_ID, HttpStatus.BAD_REQUEST);
     }
     const validAccountId = isValidObjectID(accountId);
     if (!validAccountId) {
-      throw new HttpException('Invalid Account ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        AccountMessages.INVALID_OBJECT_ID,
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    const payedBill = this.billsService.pay(id, accountId);
+    const payedBill = await this.billsService.pay(id, accountId);
     return {
-      message: ' you pay the bill successfully',
+      message: BillMessages.SUCCESS,
       status: HttpStatus.OK,
       bill: payedBill,
     };

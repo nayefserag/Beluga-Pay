@@ -1,19 +1,19 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserMessages } from 'src/components/user/user.assets';
-import { UserDto } from 'src/components/user/dto/user.dto';
+import { CreateUserDto } from './dto/create-user';
 import { UserRepository } from '../../repos/user.repo';
 import { Password } from 'src/helpers/password';
 
 @Injectable()
 export class UserService {
   constructor(private readonly UserRepository: UserRepository) {}
-  async createUser(user: UserDto): Promise<UserDto> {
+  async createUser(user: CreateUserDto): Promise<CreateUserDto> {
     user.password = await Password.hashPassword(user.password);
     const newUser = await this.UserRepository.createUser(user);
     return newUser;
   }
 
-  async getUser(email: string): Promise<UserDto> {
+  async getUser(email: string): Promise<CreateUserDto> {
     const user = await this.UserRepository.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(
@@ -24,7 +24,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(user: UserDto): Promise<UserDto | null> {
+  async updateUser(user: CreateUserDto): Promise<CreateUserDto | null> {
     const exist = await this.UserRepository.getUserByEmail({
       email: user.email,
     });
@@ -40,7 +40,7 @@ export class UserService {
     return newUser;
   }
 
-  async checkAndCreateUser(user: UserDto): Promise<UserDto> {
+  async checkAndCreateUser(user: CreateUserDto): Promise<CreateUserDto> {
     const exist = await this.UserRepository.getUserByEmail({
       email: user.email,
     });

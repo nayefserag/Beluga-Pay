@@ -1,23 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { BankAccountDto } from 'src/components/account/dto/account.dto';
-import { UserDto } from 'src/components/user/dto/user.dto';
+import { CreateBankAccountDto } from 'src/components/account/dto/create-account';
+import { CreateUserDto } from 'src/components/user/dto/create-user';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel('user') private userModel: Model<UserDto>) {}
+  constructor(@InjectModel('user') private userModel: Model<CreateUserDto>) {}
 
-  async createUser(user: UserDto): Promise<UserDto> {
+  async createUser(user: CreateUserDto): Promise<CreateUserDto> {
     const newUser = await this.userModel.create(user);
     return newUser;
   }
 
-  async getUserByEmail({ email }: { email: string }): Promise<UserDto | null> {
+  async getUserByEmail({
+    email,
+  }: {
+    email: string;
+  }): Promise<CreateUserDto | null> {
     const user = await this.userModel.findOne({ email });
     return user;
   }
-  async updateUser({ user }: { user: UserDto }): Promise<UserDto | null> {
+  async updateUser({
+    user,
+  }: {
+    user: CreateUserDto;
+  }): Promise<CreateUserDto | null> {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: user.email },
       user,
@@ -31,12 +39,12 @@ export class UserRepository {
     return true;
   }
 
-  async userHasAccounts(user: UserDto): Promise<Boolean> {
+  async userHasAccounts(user: CreateUserDto): Promise<Boolean> {
     const state = user.accounts && user.accounts.length > 0;
     return state;
   }
 
-  async addAccountToUser(user: UserDto, account: BankAccountDto) {
+  async addAccountToUser(user: CreateUserDto, account: CreateBankAccountDto) {
     const updatedUser = await this.userModel.findOneAndUpdate(
       { email: user.email },
       { $push: { accounts: account } },

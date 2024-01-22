@@ -10,7 +10,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { BankAccountDto, UpdateBankAccountDto } from './dto/account.dto';
+import { CreateBankAccountDto } from './dto/create-account';
+import { UpdateBankAccountDto } from './dto/update-account';
 import { AccountMessages } from './account.assets';
 
 @Controller('account')
@@ -18,10 +19,10 @@ export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post('create')
-  async create(@Body() account: BankAccountDto) {
+  async create(@Body() account: CreateBankAccountDto) {
     await this.accountService.checkAndcreateAccount(account);
     return {
-      message: 'Account created successfully',
+      message: AccountMessages.ACCOUNT_CREATED,
       status: HttpStatus.CREATED,
     };
   }
@@ -32,7 +33,7 @@ export class AccountController {
       _id: id,
     });
     return {
-      message: 'Accounts fetched successfully',
+      message: AccountMessages.ACCOUNT_FETCHED,
       status: HttpStatus.OK,
       data: account,
     };
@@ -44,7 +45,7 @@ export class AccountController {
       email,
     });
     return {
-      message: 'Accounts fetched successfully',
+      message: AccountMessages.ACCOUNT_FETCHED,
       status: HttpStatus.OK,
       data: account,
     };
@@ -56,7 +57,7 @@ export class AccountController {
       accountNumber,
     });
     return {
-      message: 'Accounts fetched successfully',
+      message: AccountMessages.ACCOUNT_FETCHED,
       status: HttpStatus.OK,
       data: account,
     };
@@ -66,7 +67,7 @@ export class AccountController {
   async getAllUserAccounts(@Param('email') email: string) {
     const account = await this.accountService.getAllUserAccounts(email);
     return {
-      message: 'Accounts fetched successfully',
+      message: AccountMessages.ACCOUNT_FETCHED,
       status: HttpStatus.OK,
       data: account,
     };

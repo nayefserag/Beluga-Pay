@@ -15,11 +15,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserMessages } from 'src/components/user/user.assets';
-import {
-  EmailDto,
-  UpdateUserDto,
-  UserDto,
-} from 'src/components/user/dto/user.dto';
+import { EmailDto } from './dto/email';
+import { UpdateUserDto } from './dto/update-user';
+import { CreateUserDto } from './dto/create-user';
 import { UserService } from './user.service';
 import { HttpException } from '@nestjs/common';
 
@@ -31,7 +29,7 @@ export class UserController {
   @Post('create')
   @ApiCreatedResponse({ description: 'User created successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  async create(@Body() user: UserDto) {
+  async create(@Body() user: CreateUserDto) {
     const newUser = await this.userService.checkAndCreateUser(user);
     return {
       message: UserMessages.USER_CREATED,

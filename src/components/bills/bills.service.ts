@@ -5,6 +5,7 @@ import { BillRepository } from '../../repos/bill.repo';
 import { generator } from 'src/helpers/numbergenerator';
 import { BillMessages } from '../bills/bill.assets';
 import { AccountRepository } from 'src/repos/account.repo';
+import { AccountMessages } from '../account/account.assets';
 
 @Injectable()
 export class BillsService {
@@ -30,7 +31,7 @@ export class BillsService {
   }): Promise<UpdateBillDto[]> {
     const bills = await this.billrepo.getAllBillsForUser(filter);
     if (bills.length == 0) {
-      throw new HttpException('You Dont Have Any Bills', HttpStatus.NOT_FOUND);
+      throw new HttpException(BillMessages.NO_BILLS, HttpStatus.NOT_FOUND);
     }
     return bills;
   }
@@ -38,33 +39,38 @@ export class BillsService {
   async findOne(id: string): Promise<UpdateBillDto> {
     const bill = await this.billrepo.getBillById(id);
     if (!bill) {
-      throw new HttpException('bill not found', HttpStatus.NOT_FOUND);
+      throw new HttpException(BillMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     return bill;
   }
 
-  async update(id: string, updateBillDto: UpdateBillDto) :Promise<UpdateBillDto> {
+  async update(
+    id: string,
+    updateBillDto: UpdateBillDto,
+  ): Promise<UpdateBillDto> {
     const updatedBill = await this.billrepo.updateBill(id, updateBillDto);
     if (!updatedBill) {
-      throw new HttpException('bill not updated', HttpStatus.BAD_REQUEST);
+      throw new HttpException(BillMessages.NOT_UPDATED, HttpStatus.BAD_REQUEST);
     }
-    return updatedBill
+    return updatedBill;
   }
-  async pay(id: string, accountId: string) : Promise<UpdateBillDto>{
+  async pay(id: string, accountId: string): Promise<UpdateBillDto> {
     const account = await this.accountrepo.getBy({ _id: accountId });
     if (!account) {
-      throw new HttpException('acccount not found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        AccountMessages.ACCOUNT_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
     }
     const bill = await this.billrepo.getBillById(id);
     if (!bill) {
-      throw new HttpException('acccount not found', HttpStatus.NOT_FOUND);
+      throw new HttpException(BillMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     await this.accountrepo.checkEnough(account.balance, bill.amount);
     account.balance -= bill.amount;
     bill.isPaid = true;
     await this.accountrepo.updateAccount(account, account.email);
     const payedBill = await this.update(id, bill);
-    return payedBill
-
+    return payedBill;
   }
 }

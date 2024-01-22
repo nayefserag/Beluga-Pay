@@ -1,6 +1,7 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { AccountRepository } from 'src/repos/account.repo';
-import { BankAccountDto, UpdateBankAccountDto } from './dto/account.dto';
+import { CreateBankAccountDto } from './dto/create-account';
+import { UpdateBankAccountDto } from './dto/update-account';
 import { UserRepository } from 'src/repos/user.repo';
 import { AccountMessages } from './account.assets';
 import { UserMessages } from '../user/user.assets';
@@ -15,7 +16,7 @@ export class AccountService {
     private readonly userRepo: UserRepository,
   ) {}
 
-  async checkAndcreateAccount(account: BankAccountDto) {
+  async checkAndcreateAccount(account: CreateBankAccountDto) {
     await this.checkAccountExists(account);
     const user = await this.userRepo.getUserByEmail({ email: account.email });
     if (!user) {
@@ -39,7 +40,7 @@ export class AccountService {
     return newAccount;
   }
 
-  private async checkAccountExists(account: BankAccountDto) {
+  private async checkAccountExists(account: CreateBankAccountDto) {
     const findAccount = await this.accountRepo.getBy({
       accountNumber: account.accountNumber,
       email: account.email,
@@ -61,7 +62,10 @@ export class AccountService {
     } = {},
   ) {
     if (filter._id && !isValidObjectID(filter._id)) {
-      throw new HttpException('invalid object Id', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        AccountMessages.INVALID_OBJECT_ID,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const account = await this.accountRepo.getBy(filter);
     if (!account) {

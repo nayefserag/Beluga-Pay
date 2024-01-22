@@ -10,4 +10,7 @@ export const UserMessages = {
   USER_HAS_ACCOUNTS:
     'This User Have Accounts And Its not allowd to delete account',
   USER_ACCOUNT_CHECK_FAILED: 'Error checking user accounts',
+  SENDER_USER_NOT_FOUND : 'Sender User Not Found',
+  RECIVER_USER_NOT_FOUND :'Reciver User Not Found',
+  INVALID_USER_ID : 'Invalid User Id'
 };
