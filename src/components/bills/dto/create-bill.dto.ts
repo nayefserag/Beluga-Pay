@@ -1,16 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
   IsDate,
   IsBoolean,
   IsString,
   MinLength,
   IsOptional,
   IsPhoneNumber,
+  IsIn,
+  ValidateIf,
+  Length,
+  Matches,
+
+  Max,
+  Min,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class CreateBillDto {
-  _id:string
+  _id: string;
+
+  @ApiProperty({
+    description: 'Bill amount',
+    example: 100,
+  })
+  @Min(10)
+  @Max(10000)
+  amount: number;
 
   @ApiProperty({
     description: 'Customer name',
@@ -25,12 +40,18 @@ export class CreateBillDto {
     type: String,
     example: 'phone',
   })
+  @IsIn(['phone', 'accountNumber'])
   paymentMethod: 'phone' | 'accountNumber';
 
   @ApiProperty({
     description: 'The account number',
     example: '1234567890123456',
   })
+  @Length(16, 16)
+  @Matches(/^\d{16}$/, {
+    message: 'Account number must be 16 digits',
+  })
+  @ValidateIf((obj, value) => obj.paymentMethod === 'accountNumber')
   customerAccountNumber: string;
 
   @ApiProperty({
@@ -38,22 +59,23 @@ export class CreateBillDto {
     example: '+201234567890',
   })
   @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
+  @IsNotEmpty()
+  @ValidateIf((obj, value) => obj.paymentMethod === 'phone')
   customerPhone: string;
 
   @ApiProperty({
     description: 'The account number',
     example: '1234567890123456',
   })
-  @IsNotEmpty()
   invoiceNumber: string;
 
   @IsDate()
   @IsOptional()
   invoiceDate: Date;
 
-  @IsBoolean({})
+  @IsBoolean()
   isPaid: boolean = false;
-  
+
   @IsDate()
   @IsOptional()
   paymentDate?: Date;

@@ -1,7 +1,18 @@
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
-export function generateAccountNumber() {
-  const uuid = v4();
-  const numericString = uuid.replace(/-/g, '').replace(/\D/g, '');
-  return numericString.substring(0, 16);
+export function generator(type: string): string {
+  let uuid = uuidv4().replace(/-/g, '');
+  let numericOnly = uuid.replace(/\D/g, ''); // Remove non-numeric characters
+  let shuffle = numericOnly
+    .split('')
+    .sort(function () {
+      return 0.5 - Math.random();
+    })
+    .join('');
+
+  if (type === 'Account Number') {
+    return shuffle.substring(0, 16);
+  }
+
+  return shuffle;
 }

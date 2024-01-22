@@ -166,4 +166,13 @@ export class AccountRepository {
       );
     }
   }
+
+  async checkEnough(balance: number, amount: number) {
+    if (balance < amount) {
+      throw new HttpException(
+        'you dont have enough money to pay bill',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+  }
 }

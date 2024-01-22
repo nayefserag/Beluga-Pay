@@ -3,15 +3,18 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
 export class Bill {
   @Prop({ required: true })
+  amount: number;
+
+  @Prop({ required: true })
   customerName: string;
 
-  @Prop({ 
+  @Prop({
     required: true,
     enum: ['phone', 'accountNumber'],
   })
   paymentMethod: string;
 
-  @Prop({required: false})
+  @Prop({ required: false })
   customerAccountNumber: string;
 
   @Prop({ required: false })
@@ -20,7 +23,7 @@ export class Bill {
   @Prop({ required: true })
   invoiceNumber: string;
 
-  @Prop({ required: true , default : Date.now() })
+  @Prop({ required: true, default: Date.now() })
   invoiceDate: Date;
 
   @Prop({ default: false })
@@ -28,7 +31,6 @@ export class Bill {
 
   @Prop()
   paymentDate: Date;
-
 }
 
 export const BillSchema = SchemaFactory.createForClass(Bill);

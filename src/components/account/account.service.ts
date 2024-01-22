@@ -4,7 +4,7 @@ import { BankAccountDto, UpdateBankAccountDto } from './dto/account.dto';
 import { UserRepository } from 'src/repos/user.repo';
 import { AccountMessages } from './account.assets';
 import { UserMessages } from '../user/user.assets';
-import { generateAccountNumber } from 'src/helpers/numbergenerator';
+import { generator } from 'src/helpers/numbergenerator';
 import { isValidObjectID } from 'src/helpers/idValidator';
 @Injectable()
 export class AccountService {
@@ -24,8 +24,8 @@ export class AccountService {
         HttpStatus.NOT_FOUND,
       );
     }
-    account.accountNumber = generateAccountNumber();
-    this.logger.debug(account.accountNumber);
+    account.accountNumber = generator('Account Number');
+    // this.logger.debug(account.accountNumber);
     const newAccount = await this.accountRepo.createAccount(account);
     if (!newAccount) {
       throw new HttpException(
