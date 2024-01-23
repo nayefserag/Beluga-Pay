@@ -6,15 +6,15 @@ import { Password } from '../../helpers/password';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly UserRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
   async createUser(user: CreateUserDto): Promise<CreateUserDto> {
     user.password = await Password.hashPassword(user.password);
-    const newUser = await this.UserRepository.createUser(user);
+    const newUser = await this.userRepository.createUser(user);
     return newUser;
   }
 
   async getUser(email: string): Promise<CreateUserDto> {
-    const user = await this.UserRepository.getUserByEmail({ email });
+    const user = await this.userRepository.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(
 
@@ -26,7 +26,7 @@ export class UserService {
   }
 
   async updateUser(user: CreateUserDto): Promise<CreateUserDto | null> {
-    const exist = await this.UserRepository.getUserByEmail({
+    const exist = await this.userRepository.getUserByEmail({
       email: user.email,
     });
     if (!exist) {
@@ -36,13 +36,13 @@ export class UserService {
       );
     }
 
-    const newUser = await this.UserRepository.updateUser({ user });
+    const newUser = await this.userRepository.updateUser({ user });
 
     return newUser;
   }
 
   async checkAndCreateUser(user: CreateUserDto): Promise<CreateUserDto> {
-    const exist = await this.UserRepository.getUserByEmail({
+    const exist = await this.userRepository.getUserByEmail({
       email: user.email,
     });
     if (exist) {
@@ -63,14 +63,14 @@ export class UserService {
   }
 
   async deleteUser(email: string): Promise<Boolean | null> {
-    const userOrError = await this.UserRepository.getUserByEmail({ email });
+    const userOrError = await this.userRepository.getUserByEmail({ email });
     if (!userOrError) {
       throw new HttpException(
         UserMessages.USER_NOT_FOUND,
         HttpStatus.NOT_FOUND,
       );
     }
-    const hasAccounts = await this.UserRepository.userHasAccounts(userOrError);
+    const hasAccounts = await this.userRepository.userHasAccounts(userOrError);
     if (hasAccounts) {
       throw new HttpException(
         UserMessages.USER_HAS_ACCOUNTS,
@@ -78,7 +78,7 @@ export class UserService {
       );
     }
 
-    const deletedUser = await this.UserRepository.deleteUser(email);
+    const deletedUser = await this.userRepository.deleteUser(email);
     if (!deletedUser) {
       throw new HttpException(
         UserMessages.USER_NOT_DELETED,

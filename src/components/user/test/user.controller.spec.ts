@@ -5,7 +5,6 @@ import { UpdateUserDto } from '../dto/update-user';
 import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
 
-
 describe('UserController', () => {
   let userController: UserController;
   let userService: UserService;
@@ -31,8 +30,15 @@ describe('UserController', () => {
   });
 
   it('should create a user', async () => {
-    const createUserDto: CreateUserDto = { name: 'test', email: 'test@test.com', password: 'test', accounts: ['test'] };
-    jest.spyOn(userService, 'checkAndCreateUser').mockResolvedValue(createUserDto);
+    const createUserDto: CreateUserDto = {
+      name: 'test',
+      email: 'test@test.com',
+      password: 'test',
+      accounts: ['test'],
+    };
+    jest
+      .spyOn(userService, 'checkAndCreateUser')
+      .mockResolvedValue(createUserDto);
     expect(await userController.create(createUserDto)).toEqual({
       message: 'User created successfully',
       status: 201,
@@ -42,7 +48,12 @@ describe('UserController', () => {
 
   it('should get a user', async () => {
     const emailDto: EmailDto = { email: 'test@test.com' };
-    const user = { ...emailDto, name: 'test', password: 'test', accounts: ['test'] };
+    const user = {
+      ...emailDto,
+      name: 'test',
+      password: 'test',
+      accounts: ['test'],
+    };
     jest.spyOn(userService, 'getUser').mockResolvedValue(user);
     expect(await userController.getUser(emailDto)).toEqual({
       message: 'User fetched successfully',
@@ -52,7 +63,12 @@ describe('UserController', () => {
   });
 
   it('should update a user', async () => {
-    const updateUserDto: UpdateUserDto = { name: 'updated', email: 'test@test.com', password: 'updated', accounts: ['updated'] };
+    const updateUserDto: UpdateUserDto = {
+      name: 'updated',
+      email: 'test@test.com',
+      password: 'updated',
+      accounts: ['updated'],
+    };
     jest.spyOn(userService, 'updateUser').mockResolvedValue(updateUserDto);
     expect(await userController.updateUser(updateUserDto)).toEqual({
       message: 'User updated successfully',
