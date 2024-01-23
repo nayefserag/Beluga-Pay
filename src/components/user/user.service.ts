@@ -1,8 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { UserMessages } from 'src/components/user/user.assets';
+import { UserMessages } from './user.assets';
 import { CreateUserDto } from './dto/create-user';
 import { UserRepository } from '../../repos/user.repo';
-import { Password } from 'src/helpers/password';
+import { Password } from '../../helpers/password';
 
 @Injectable()
 export class UserService {
@@ -17,6 +17,7 @@ export class UserService {
     const user = await this.UserRepository.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(
+
         UserMessages.USER_NOT_FOUND,
         HttpStatus.NOT_FOUND,
       );

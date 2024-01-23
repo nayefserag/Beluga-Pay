@@ -16,7 +16,7 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({
     required: true,
@@ -26,7 +26,7 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     required: false,
@@ -37,7 +37,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @IsStrongPassword()
-  password: string;
+  password!: string;
 
   @ApiProperty({
     required: false,
@@ -45,5 +45,5 @@ export class UpdateUserDto {
   })
   @IsOptional()
   @IsArray()
-  accounts: string[];
+  accounts!: string[];
 }

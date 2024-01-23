@@ -14,12 +14,12 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserMessages } from 'src/components/user/user.assets';
 import { EmailDto } from './dto/email';
 import { UpdateUserDto } from './dto/update-user';
 import { CreateUserDto } from './dto/create-user';
 import { UserService } from './user.service';
 import { HttpException } from '@nestjs/common';
+import { UserMessages } from './user.assets';
 
 @ApiTags('User CRUD Operations ')
 @Controller('user')

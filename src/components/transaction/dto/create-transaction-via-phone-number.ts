@@ -10,7 +10,7 @@ import {
 import { formatISO } from 'date-fns';
 
 export class TransactionViaPhoneDto {
-  _id: string;
+  _id!: string;
 
   @ApiProperty({
     description: 'Transaction via',
@@ -26,7 +26,7 @@ export class TransactionViaPhoneDto {
   })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @ApiProperty({
     description: 'Transaction amount',
@@ -36,7 +36,7 @@ export class TransactionViaPhoneDto {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  amount: number;
+  amount!: number;
 
   @ApiProperty({
     description: 'Transaction date',
@@ -51,7 +51,7 @@ export class TransactionViaPhoneDto {
     example: '1234567890',
   })
   @IsPhoneNumber('EG')
-  sender: string;
+  sender!: string;
 
   @ApiProperty({
     description: 'Transaction receiver',
@@ -59,7 +59,7 @@ export class TransactionViaPhoneDto {
     example: '1234567890',
   })
   @IsPhoneNumber('EG')
-  receiver: string;
+  receiver!: string;
 
   @ApiProperty({
     description: 'Transaction status',

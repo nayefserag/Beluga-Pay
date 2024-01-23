@@ -11,7 +11,7 @@ import {
 import { formatISO } from 'date-fns';
 
 export class TransactionViaAccountNumberDto {
-  _id: string;
+  _id!: string;
 
   @ApiProperty({
     description: 'Transaction via',
@@ -27,7 +27,7 @@ export class TransactionViaAccountNumberDto {
   })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @ApiProperty({
     description: 'Transaction amount',
@@ -37,7 +37,7 @@ export class TransactionViaAccountNumberDto {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  amount: number;
+  amount!: number;
 
   @ApiProperty({
     description: 'Transaction date',
@@ -57,7 +57,7 @@ export class TransactionViaAccountNumberDto {
   @IsString()
   @IsNotEmpty()
   @Length(16, 16, { message: 'Account number must be exactly 16 digits long' })
-  sender: string;
+  sender!: string;
 
   @ApiProperty({
     description: 'Account number associated with the transaction',
@@ -67,7 +67,7 @@ export class TransactionViaAccountNumberDto {
   @IsString()
   @IsNotEmpty()
   @Length(16, 16, { message: 'Account number must be exactly 16 digits long' })
-  receiver: string;
+  receiver!: string;
 
   @ApiProperty({
     description: 'Transaction status',
@@ -79,5 +79,5 @@ export class TransactionViaAccountNumberDto {
   @IsIn(['pending', 'accepted', 'rejected'], {
     message: 'Status must be either pending, accepted, or rejected',
   })
-  status: string;
+  status!: string;
 }

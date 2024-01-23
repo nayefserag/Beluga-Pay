@@ -16,7 +16,7 @@ export class UserPasswordDto {
   @IsNotEmpty()
   @IsString()
   @IsStrongPassword()
-  password: string;
+  password!: string;
 
   @ApiProperty({
     required: true,
@@ -24,5 +24,5 @@ export class UserPasswordDto {
     example: 'john.doe@example.com',
   })
   @IsEmail()
-  email: string;
+  email!: string;
 }

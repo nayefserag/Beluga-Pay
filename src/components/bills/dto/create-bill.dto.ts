@@ -17,7 +17,7 @@ import {
 } from 'class-validator';
 
 export class CreateBillDto {
-  _id: string;
+  _id!: string;
 
   @ApiProperty({
     description: 'Bill amount',
@@ -25,7 +25,7 @@ export class CreateBillDto {
   })
   @Min(10)
   @Max(10000)
-  amount: number;
+  amount!: number;
 
   @ApiProperty({
     description: 'Customer name',
@@ -33,7 +33,7 @@ export class CreateBillDto {
   })
   @IsString()
   @MinLength(3)
-  customerName: string;
+  customerName!: string;
 
   @ApiProperty({
     description: 'Transaction via',
@@ -41,7 +41,7 @@ export class CreateBillDto {
     example: 'phone',
   })
   @IsIn(['phone', 'accountNumber'])
-  paymentMethod: 'phone' | 'accountNumber';
+  paymentMethod!: 'phone' | 'accountNumber';
 
   @ApiProperty({
     description: 'The account number',
@@ -52,7 +52,7 @@ export class CreateBillDto {
     message: 'Account number must be 16 digits',
   })
   @ValidateIf((obj, value) => obj.paymentMethod === 'accountNumber')
-  customerAccountNumber: string;
+  customerAccountNumber!: string;
 
   @ApiProperty({
     description: 'Phone number',
@@ -61,17 +61,17 @@ export class CreateBillDto {
   @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
   @IsNotEmpty()
   @ValidateIf((obj, value) => obj.paymentMethod === 'phone')
-  customerPhone: string;
+  customerPhone!: string;
 
   @ApiProperty({
     description: 'The account number',
     example: '1234567890123456',
   })
-  invoiceNumber: string;
+  invoiceNumber!: string;
 
   @IsDate()
   @IsOptional()
-  invoiceDate: Date;
+  invoiceDate!: Date;
 
   @IsBoolean()
   isPaid: boolean = false;

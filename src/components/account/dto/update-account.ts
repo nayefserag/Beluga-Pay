@@ -17,7 +17,7 @@ export class UpdateBankAccountDto {
   })
   @IsEmail()
   @IsOptional()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     description: 'Customer name',
@@ -26,13 +26,13 @@ export class UpdateBankAccountDto {
   @MinLength(3)
   @IsString()
   @IsOptional()
-  customerName: string;
+  customerName!: string;
 
   @ApiProperty({ description: 'Balance', example: 1000 })
   @IsPositive()
   @IsNumber()
   @IsOptional()
-  balance: number;
+  balance!: number;
 
   @ApiProperty({
     description: 'Phone number',
@@ -40,5 +40,5 @@ export class UpdateBankAccountDto {
   })
   @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
   @IsOptional()
-  phoneNumber: string;
+  phoneNumber!: string;
 }

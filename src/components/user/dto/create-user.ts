@@ -16,7 +16,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({
     required: true,
@@ -25,7 +25,7 @@ export class CreateUserDto {
   })
   @IsString()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     required: true,
@@ -35,7 +35,7 @@ export class CreateUserDto {
   })
   @IsString()
   @IsStrongPassword()
-  password: string;
+  password!: string;
 
   @ApiProperty({
     required: false,
@@ -43,5 +43,5 @@ export class CreateUserDto {
   })
   @IsOptional()
   @IsArray()
-  accounts: string[];
+  accounts!: string[];
 }

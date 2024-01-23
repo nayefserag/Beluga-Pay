@@ -5,16 +5,16 @@ import { Account, AccountSchema } from './account.schema';
 @Schema()
 export class User {
   @Prop({ required: true })
-  name: string;
+  name!: string;
 
   @Prop({ required: true })
-  email: string;
+  email!: string;
 
   @Prop({ required: true })
-  password: string;
+  password!: string;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Account' }] }) // Reference schema
-  accounts: Account[];
+    accounts: Account[] = [];
   // @Prop({ type: [{ type: AccountSchema }] }) // Embedded schema
   // accounts: Account[];
 }
