@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { BillsService } from './bills.service';
 import { CreateBillDto } from './dto/create-bill.dto';
-import { isValidObjectID } from 'src/helpers/idValidator';
+import { isValidObjectID } from '../../helpers/idValidator';
 import { SearchBillsDto } from './dto/search-bill.dto';
 import { BillMessages } from './bill.assets';
 import { AccountMessages } from '../account/account.assets';

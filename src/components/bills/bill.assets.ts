@@ -7,7 +7,7 @@ export const BillMessages = {
   YOUR_BILL: 'Here Is Your Bill',
   INVALID_ID: 'Invalid Bill ID',
   SUCCESS: 'You Payed The Bill Successfully',
-  NO_BILLS :'You Dont Have Any Bills',
-  NOT_FOUND :'Bill Not Found',
-  NOT_UPDATED :'Bill Not Updated'
+  NO_BILLS: 'You Dont Have Any Bills',
+  NOT_FOUND: 'Bill Not Found',
+  NOT_UPDATED: 'Bill Not Updated',
 };

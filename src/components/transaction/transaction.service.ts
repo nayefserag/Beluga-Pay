@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { TransactionViaAccountNumberDto } from './dto/create-transaction-via-account-number';
 import { TransactionViaPhoneDto } from './dto/create-transaction-via-phone-number';
-import { TransactionRepository } from 'src/repos/transaction.repo';
-import { AccountRepository } from 'src/repos/account.repo';
 import { TransactionMessages } from './transaction.assets';
-import { isValidObjectID } from 'src/helpers/idValidator';
 import { UserMessages } from '../user/user.assets';
+import { isValidObjectID } from '../../helpers/idValidator';
+import { AccountRepository } from '../../repos/account.repo';
+import { TransactionRepository } from '../../repos/transaction.repo';
 @Injectable()
 export class TransactionService {
   constructor(

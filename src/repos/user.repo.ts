@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateBankAccountDto } from 'src/components/account/dto/create-account';
-import { CreateUserDto } from 'src/components/user/dto/create-user';
+import { CreateBankAccountDto } from '../components/account/dto/create-account';
+import { CreateUserDto } from '../components/user/dto/create-user';
 
 @Injectable()
 export class UserRepository {
@@ -34,12 +34,12 @@ export class UserRepository {
     return updatedUser;
   }
 
-  async deleteUser(email: string): Promise<Boolean> {
+  async deleteUser(email: string): Promise<boolean> {
     await this.userModel.deleteOne({ email });
     return true;
   }
 
-  async userHasAccounts(user: CreateUserDto): Promise<Boolean> {
+  async userHasAccounts(user: CreateUserDto): Promise<boolean> {
     const state = user.accounts && user.accounts.length > 0;
     return state;
   }

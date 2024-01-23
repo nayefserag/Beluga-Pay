@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Bill } from 'src/Schema/bill.schema';
-
-import { CreateBillDto } from 'src/components/bills/dto/create-bill.dto';
-import { UpdateBillDto } from 'src/components/bills/dto/update-bill.dto';
+import { Bill } from '../Schema/bill.schema';
+import { CreateBillDto } from '../components/bills/dto/create-bill.dto';
+import { UpdateBillDto } from '../components/bills/dto/update-bill.dto';
 @Injectable()
 export class BillRepository {
   constructor(@InjectModel('bill') private billModel: Model<CreateBillDto>) {}

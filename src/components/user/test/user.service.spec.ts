@@ -146,7 +146,7 @@ describe('UserService', () => {
   });
 
   it('should throw an exception if user has accounts on deleteUser', async () => {
-    let user: CreateUserDto = {
+    const user: CreateUserDto = {
       email: 'test@example.com',
       password: 'test',
       name: 'Test User',

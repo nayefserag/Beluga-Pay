@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Account, AccountSchema } from './account.schema';
+import { Account } from './account.schema';
 
 @Schema()
 export class User {
@@ -14,7 +14,7 @@ export class User {
   password!: string;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Account' }] }) // Reference schema
-    accounts: Account[] = [];
+  accounts: Account[] = [];
   // @Prop({ type: [{ type: AccountSchema }] }) // Embedded schema
   // accounts: Account[];
 }

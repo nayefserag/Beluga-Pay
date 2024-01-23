@@ -1,6 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transaction } from './transaction.schema';
-
 @Schema()
 export class Account {
   @Prop({ required: true })

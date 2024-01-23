@@ -17,7 +17,6 @@ export class UserService {
     const user = await this.userRepository.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(
-
         UserMessages.USER_NOT_FOUND,
         HttpStatus.NOT_FOUND,
       );
@@ -62,7 +61,7 @@ export class UserService {
     return newUser;
   }
 
-  async deleteUser(email: string): Promise<Boolean | null> {
+  async deleteUser(email: string): Promise<boolean | null> {
     const userOrError = await this.userRepository.getUserByEmail({ email });
     if (!userOrError) {
       throw new HttpException(

@@ -26,5 +26,5 @@ export class SearchBillsDto {
   })
   @IsPhoneNumber('EG', { message: 'Invalid Egyptian phone number format' })
   @IsOptional()
-  customerPhone?: string; 
+  customerPhone?: string;
 }

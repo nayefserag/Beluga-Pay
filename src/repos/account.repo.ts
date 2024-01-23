@@ -1,22 +1,21 @@
-import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, ProjectionType, Types } from 'mongoose';
-import { AccountMessages } from 'src/components/account/account.assets';
-import { CreateBankAccountDto } from 'src/components/account/dto/create-account';
-import { UpdateBankAccountDto } from 'src/components/account/dto/update-account';
-import { TransactionViaAccountNumberDto } from 'src/components/transaction/dto/create-transaction-via-account-number';
-import { TransactionViaPhoneDto } from 'src/components/transaction/dto/create-transaction-via-phone-number';
-import { UserRepository } from 'src/repos/user.repo';
+import { FilterQuery, Model, ProjectionType } from 'mongoose';
+import { AccountMessages } from '../components/account/account.assets';
+import { CreateBankAccountDto } from '../components/account/dto/create-account';
+import { UpdateBankAccountDto } from '../components/account/dto/update-account';
+import { TransactionViaAccountNumberDto } from '../components/transaction/dto/create-transaction-via-account-number';
+import { TransactionViaPhoneDto } from '../components/transaction/dto/create-transaction-via-phone-number';
+import { UserRepository } from '../repos/user.repo';
 import { TransactionRepository } from './transaction.repo';
-import { constructObjId } from 'src/helpers/idValidator';
-import { Account } from 'src/Schema/account.schema';
+import { constructObjId } from '../helpers/idValidator';
+import { Account } from '../Schema/account.schema';
 
 @Injectable()
 export class AccountRepository {
-  private readonly logger = new Logger(AccountRepository.name);
   constructor(
     @InjectModel('account') private accountModel: Model<CreateBankAccountDto>,
-    private readonly UserRepository: UserRepository,
+    private readonly userRepository: UserRepository,
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
@@ -57,11 +56,9 @@ export class AccountRepository {
         HttpStatus.NOT_FOUND,
       );
     }
-    const updatedAccount = await this.accountModel.findOneAndUpdate(
-      { email: email },
-      accountUpdate,
-      { new: true },
-    ).exec();
+    const updatedAccount = await this.accountModel
+      .findOneAndUpdate({ email: email }, accountUpdate, { new: true })
+      .exec();
 
     if (!updatedAccount) {
       throw new HttpException(
@@ -89,7 +86,7 @@ export class AccountRepository {
         HttpStatus.FORBIDDEN,
       );
     }
-    await this.UserRepository.removeAccountFromUser(
+    await this.userRepository.removeAccountFromUser(
       account.email,
       account._id.toString(),
     );
@@ -100,7 +97,7 @@ export class AccountRepository {
     senderAccount: CreateBankAccountDto,
     recipientAccount: CreateBankAccountDto,
     transaction: TransactionViaPhoneDto | TransactionViaAccountNumberDto,
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     if (senderAccount.accountNumber === recipientAccount.accountNumber) {
       throw new HttpException(
         'Sender and recipient cannot be the same account',

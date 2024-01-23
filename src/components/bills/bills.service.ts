@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { BillRepository } from '../../repos/bill.repo';
-import { generator } from 'src/helpers/numbergenerator';
+import { AccountRepository } from '../../repos/account.repo';
+import { generator } from '../../helpers/numbergenerator';
 import { BillMessages } from '../bills/bill.assets';
-import { AccountRepository } from 'src/repos/account.repo';
 import { AccountMessages } from '../account/account.assets';
 import { SearchBillsDto } from './dto/search-bill.dto';
 

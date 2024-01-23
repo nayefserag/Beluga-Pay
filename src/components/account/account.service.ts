@@ -1,16 +1,15 @@
-import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
-import { AccountRepository } from 'src/repos/account.repo';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { AccountRepository } from '../../repos/account.repo';
+import { UserRepository } from '../../repos/user.repo';
+import { generator } from '../../helpers/numbergenerator';
 import { CreateBankAccountDto } from './dto/create-account';
 import { UpdateBankAccountDto } from './dto/update-account';
-import { UserRepository } from 'src/repos/user.repo';
+
 import { AccountMessages } from './account.assets';
 import { UserMessages } from '../user/user.assets';
-import { generator } from 'src/helpers/numbergenerator';
-import { isValidObjectID } from 'src/helpers/idValidator';
+import { isValidObjectID } from '../../helpers/idValidator';
 @Injectable()
 export class AccountService {
-  private readonly logger = new Logger(AccountService.name);
-
   constructor(
     private readonly accountRepo: AccountRepository,
     private readonly userRepo: UserRepository,

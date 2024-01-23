@@ -1,17 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
-import { CreateBankAccountDto } from 'src/components/account/dto/create-account';
-import { TransactionViaAccountNumberDto } from 'src/components/transaction/dto/create-transaction-via-account-number';
-import { TransactionViaPhoneDto } from 'src/components/transaction/dto/create-transaction-via-phone-number';
-import { CreateUserDto } from 'src/components/user/dto/create-user';
+import { TransactionViaAccountNumberDto } from '../components/transaction/dto/create-transaction-via-account-number';
+import { TransactionViaPhoneDto } from '../components/transaction/dto/create-transaction-via-phone-number';
 
 @Injectable()
 export class TransactionRepository {
   constructor(
-    @InjectModel('account') private accountModel: Model<CreateBankAccountDto>,
-    @InjectModel('user') private userModel: Model<CreateUserDto>,
     @InjectModel('transaction')
     private transactionModel: Model<TransactionViaPhoneDto>,
   ) {}
