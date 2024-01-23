@@ -41,8 +41,7 @@ export class AccountService {
 
   private async checkAccountExists(account: CreateBankAccountDto) {
     const findAccount = await this.accountRepo.getBy({
-      accountNumber: account.accountNumber,
-      email: account.email,
+  
       phoneNumber: account.phoneNumber,
     });
     if (findAccount) {
