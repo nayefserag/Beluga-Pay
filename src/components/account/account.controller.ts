@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateBankAccountDto } from './dto/create-account';
@@ -115,8 +116,14 @@ export class AccountController {
     type: String,
     description: 'Email of the user to fetch accounts for',
   })
-  async getAllUserAccounts(@Param('email') email: string) {
-    const account = await this.accountService.getAllUserAccounts(email);
+  async getAllUserAccounts(
+    @Param('email') email: string,
+    @Query() pagination: { skip: number, limit: number },
+  ) {
+    const account = await this.accountService.getAllUserAccounts(
+      email,
+      pagination,
+    );
     return {
       message: AccountMessages.ACCOUNT_FETCHED,
       status: HttpStatus.OK,

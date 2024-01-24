@@ -39,10 +39,14 @@ export class AccountRepository {
 
   async getAllUserAccounts({
     email,
+    pagination
   }: {
-    email: string;
+    email: string,
+    pagination: {skip: number, limit: number}
   }): Promise<CreateBankAccountDto[]> {
-    return await this.accountModel.find({ email });
+    const accounts =await this.accountModel.find({ email }).limit(pagination.limit).skip(pagination.skip).exec();
+
+    return accounts
   }
 
   async updateAccount(

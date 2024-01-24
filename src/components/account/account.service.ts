@@ -74,7 +74,7 @@ export class AccountService {
     return account;
   }
 
-  async getAllUserAccounts(email: string) {
+  async getAllUserAccounts(email: string,pagination: {skip: number, limit: number}) {
     const user = await this.userRepo.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(
@@ -83,7 +83,7 @@ export class AccountService {
       );
     }
 
-    const accounts = await this.accountRepo.getAllUserAccounts({ email });
+    const accounts = await this.accountRepo.getAllUserAccounts({ email ,pagination});
     if (accounts.length === 0) {
       throw new HttpException(
         AccountMessages.User_DOESNT_HAVE_ACCOUNTS,
