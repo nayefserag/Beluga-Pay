@@ -20,9 +20,8 @@ describe('TransactionController (e2e)', () => {
       via: 'Phone',
       description: 'test',
       amount: 100,
-      recipient: "01016022217",
-      sender: "01000856582"
-      
+      recipient: '01016022217',
+      sender: '01000856582',
     };
 
     await request(app.getHttpServer())
@@ -33,7 +32,6 @@ describe('TransactionController (e2e)', () => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 201);
         expect(response.body).toHaveProperty('data');
-        
       });
   });
 

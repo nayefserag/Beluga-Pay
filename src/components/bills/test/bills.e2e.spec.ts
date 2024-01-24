@@ -17,17 +17,17 @@ describe('BillsController (e2e)', () => {
 
   it('POST /bills/create', async () => {
     const createBillDto = {
-      amount  : 100,
-      customerName : 'Nayf',
-      paymentMethod : 'phone',
-      customerPhone : '01016022217',
+      amount: 100,
+      customerName: 'Nayf',
+      paymentMethod: 'phone',
+      customerPhone: '01016022217',
     };
 
     await request(app.getHttpServer())
       .post('/bills/create')
       .send(createBillDto)
       .expect(201)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 201);
         expect(response.body).toHaveProperty('data');
@@ -35,15 +35,15 @@ describe('BillsController (e2e)', () => {
   });
 
   it('GET /bills', async () => {
-    const searchBillsDto = {    
+    const searchBillsDto = {
       customerPhone: '01016022217',
-        };
+    };
 
     await request(app.getHttpServer())
       .get('/bills')
       .send(searchBillsDto)
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 200);
         expect(response.body).toHaveProperty('bills');
@@ -56,7 +56,7 @@ describe('BillsController (e2e)', () => {
     await request(app.getHttpServer())
       .get(`/bills/${billId}`)
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 200);
         expect(response.body).toHaveProperty('bills');
@@ -71,7 +71,7 @@ describe('BillsController (e2e)', () => {
       .patch(`/bills/payBill/${billId}`)
       .send({ accountId })
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 200);
         expect(response.body).toHaveProperty('bill');

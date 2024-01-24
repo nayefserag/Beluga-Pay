@@ -21,15 +21,14 @@ describe('AccountController (e2e)', () => {
       balance: 100,
       accountType: 'savings',
       phoneNumber: '01016022217',
-      email: 'nayf@example.com'
-      
+      email: 'nayf@example.com',
     };
 
     await request(app.getHttpServer())
       .post('/account/create')
       .send(createAccountDto)
       .expect(201)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 201);
       });
@@ -41,14 +40,12 @@ describe('AccountController (e2e)', () => {
     await request(app.getHttpServer())
       .get(`/account/getbyid/${accountId}`)
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toHaveProperty('message');
         expect(response.body).toHaveProperty('status', 200);
         expect(response.body).toHaveProperty('data');
       });
   });
-
-
 
   afterAll(async () => {
     await app.close();

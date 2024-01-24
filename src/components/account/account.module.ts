@@ -7,7 +7,7 @@ import { UserSchema } from '../../Schema/users.schema';
 import { AccountRepository } from '../../repos/account.repo';
 import { UserRepository } from '../../repos/user.repo';
 import { TransactionRepository } from '../../repos/transaction.repo';
-import { MongooseModule } from '@nestjs/mongoose';;
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   providers: [
