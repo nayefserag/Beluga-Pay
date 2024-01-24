@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import * as request from 'supertest';
-import { AppModule } from '../../../app.module';
+import { AppModule } from '../src/app.module';
 describe('UserController (e2e)', () => {
   let app: INestApplication;
   let httpServer;
@@ -10,7 +10,7 @@ describe('UserController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
+ 
     app = moduleFixture.createNestApplication();
     await app.init();
     httpServer = app.getHttpServer();
@@ -27,14 +27,13 @@ describe('UserController (e2e)', () => {
       password: 'password123',
     };
 
-    await request(httpServer)
+    const response = await request(httpServer)
       .post('/user/create')
       .send(newUser)
-      .expect(201)
-      .then((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toEqual('User created successfully');
-      });
+      .expect(201);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('User created successfully');
   });
 
   it('/user/getuser (GET)', async () => {
@@ -42,14 +41,13 @@ describe('UserController (e2e)', () => {
       email: 'user@example.com',
     };
 
-    await request(httpServer)
+    const response = await request(httpServer)
       .get('/user/getuser')
       .send(emailDto)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toEqual('User fetched successfully');
-      });
+      .expect(200);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('User fetched successfully');
   });
 
   it('/user/updateuser (PATCH)', async () => {
@@ -58,14 +56,13 @@ describe('UserController (e2e)', () => {
       name: 'John Doe 2',
     };
 
-    await request(httpServer)
+    const response = await request(httpServer)
       .patch('/user/updateuser')
       .send(updateUserDto)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toEqual('User updated successfully');
-      });
+      .expect(200);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('User updated successfully');
   });
 
   it('/user/deleteuser (DELETE)', async () => {
@@ -73,13 +70,11 @@ describe('UserController (e2e)', () => {
       email: 'user@example.com',
     };
 
-    await request(httpServer)
+    const response = await request(httpServer)
       .delete('/user/deleteuser')
       .send(emailDto)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body.message).toEqual('User deleted successfully');
-      });
+      .expect(200);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toEqual('User deleted successfully');
   });
 });

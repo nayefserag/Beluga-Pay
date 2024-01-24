@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../../app.module';
+import { AppModule } from '../src/app.module';
 
 describe('AccountController (e2e)', () => {
   let app: INestApplication;
@@ -24,27 +24,25 @@ describe('AccountController (e2e)', () => {
       email: 'nayf@example.com',
     };
 
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/account/create')
       .send(createAccountDto)
-      .expect(201)
-      .expect((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('status', 201);
-      });
+      .expect(201);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('status', 201);
   });
 
   it('GET /account/getbyid/:id', async () => {
     const accountId = '65b00e91bca44e96902aa68e';
 
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .get(`/account/getbyid/${accountId}`)
-      .expect(200)
-      .expect((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('status', 200);
-        expect(response.body).toHaveProperty('data');
-      });
+      .expect(200);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('status', 200);
+    expect(response.body).toHaveProperty('data');
   });
 
   afterAll(async () => {

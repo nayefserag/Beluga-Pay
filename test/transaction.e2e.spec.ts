@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../../app.module';
+import { AppModule } from '../src/app.module';
 
 describe('TransactionController (e2e)', () => {
   let app: INestApplication;
@@ -24,50 +24,47 @@ describe('TransactionController (e2e)', () => {
       sender: '01000856582',
     };
 
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/transaction/send-money/via-phone')
       .send(transactionDto)
-      .expect(201)
-      .expect((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('status', 201);
-        expect(response.body).toHaveProperty('data');
-      });
+      .expect(201);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('status', 201);
+    expect(response.body).toHaveProperty('data');
   });
 
   it('POST /transaction/send-money/via-account-number', async () => {
     const transactionDto = {
-      // fill with valid data
+      via: 'phone',
+      description: 'test',
+      amount: 100,
+      recipient: '01016022217',
+      sender: '01000856582',
     };
 
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post('/transaction/send-money/via-account-number')
       .send(transactionDto)
-      .expect(201)
-      .expect((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('status', 201);
-        expect(response.body).toHaveProperty('data');
-        // Additional assertions as necessary
-      });
+      .expect(201);
+
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('status', 201);
+    expect(response.body).toHaveProperty('data');
   });
 
   it('PATCH /transaction/accept-transaction', async () => {
-    const transactionId = 'some-valid-id';
+    const transactionId = 'id123';
 
-    await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .patch('/transaction/accept-transaction')
       .send(transactionId)
-      .expect(200)
-      .expect((response) => {
-        expect(response.body).toHaveProperty('message');
-        expect(response.body).toHaveProperty('status', 200);
-        expect(response.body).toHaveProperty('data');
-        // Additional assertions as necessary
-      });
-  });
+      .expect(200);
 
-  // Add similar tests for 'reject-transaction' and 'My-transactions'
+    expect(response.body).toHaveProperty('message');
+    expect(response.body).toHaveProperty('status', 200);
+    expect(response.body).toHaveProperty('data');
+  });
 
   afterAll(async () => {
     await app.close();
