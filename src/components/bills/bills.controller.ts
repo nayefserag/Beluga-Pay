@@ -7,6 +7,7 @@ import {
   Param,
   HttpStatus,
   HttpException,
+  Query,
 } from '@nestjs/common';
 import { BillsService } from './bills.service';
 import { CreateBillDto } from './dto/create-bill.dto';
@@ -20,7 +21,12 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiOkResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { Bill } from 'src/Schema/bill.schema';
 @Controller('bills')
 @ApiTags('bills')
 export class BillsController {
@@ -28,7 +34,8 @@ export class BillsController {
 
   @Post('create')
   @ApiOperation({ summary: 'Create a new bill' })
-  @ApiResponse({ status: 201, description: 'Bill successfully created.' })
+  @ApiCreatedResponse({ status: 201, description: 'Bill successfully created.', type: Bill })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiBody({ type: CreateBillDto })
   async create(@Body() createBillDto: CreateBillDto) {
     const bill = await this.billsService.create(createBillDto);
@@ -41,9 +48,11 @@ export class BillsController {
 
   @Get()
   @ApiOperation({ summary: 'Find all bills based on filter' })
-  @ApiResponse({ status: 200, description: 'List of bills.' })
-  @ApiBody({ type: SearchBillsDto })
-  async findAll(@Body() filter: SearchBillsDto) {
+  @ApiOkResponse({ status: 200, description: 'List of bills.', type: [Bill] })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiQuery({ name: 'customerAccountNumber', required: false, type: String })
+  @ApiQuery({ name: 'customerPhone', required: false, type: String })  
+  async findAll(@Query() filter: SearchBillsDto) {
     const { customerAccountNumber, customerPhone } = filter;
 
     if (!customerAccountNumber && !customerPhone) {
@@ -63,8 +72,9 @@ export class BillsController {
 
   @Get('/:billId')
   @ApiOperation({ summary: 'Find a bill by ID' })
-  @ApiResponse({ status: 200, description: 'Details of the bill.' })
-  @ApiParam({ name: 'billId', description: 'ID of the bill' })
+  @ApiOkResponse({ status: 200, description: 'Details of the bill.', type: Bill })
+  @ApiBadRequestResponse({ description: 'Invalid Bill ID' })
+  @ApiParam({ name: 'billId', description: 'ID of the bill', type: String })  
   findOne(@Param('billId') billId: string) {
     const valid = isValidObjectID(billId);
     if (!valid) {
@@ -80,9 +90,22 @@ export class BillsController {
 
   @Patch('payBill/:id')
   @ApiOperation({ summary: 'Pay a bill' })
-  @ApiResponse({ status: 200, description: 'Bill payment success.' })
-  @ApiParam({ name: 'id', description: 'ID of the bill to be paid' })
-  @ApiBody({ type: String, description: 'Account ID for payment' })
+  @ApiOkResponse({ status: 200, description: 'Bill payment success.', type: Bill })
+  @ApiBadRequestResponse({ description: 'Invalid Bill ID or Account ID' })
+  @ApiParam({ name: 'id', description: 'ID of the bill to be paid', type: String })
+  @ApiBody({
+    description: 'Account ID for payment',
+    type: Object,
+    schema: {
+      type: 'object',
+      properties: {
+        accountId: {
+          type: 'string',
+          description: 'Account ID for the payment',
+        },
+      },
+    },
+  })
   async payBill(@Param('id') id: string, @Body('accountId') accountId: string) {
     const validBill = isValidObjectID(id);
     if (!validBill) {

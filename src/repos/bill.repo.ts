@@ -1,38 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
-import { Bill } from '../Schema/bill.schema';
-import { CreateBillDto } from '../components/bills/dto/create-bill.dto';
-import { UpdateBillDto } from '../components/bills/dto/update-bill.dto';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { Bill, BillFromDb as BillDocument } from '../Schema/bill.schema';
+import { constructObjId } from 'src/helpers/idValidator';
 @Injectable()
 export class BillRepository {
-  constructor(@InjectModel('bill') private billModel: Model<CreateBillDto>) {}
+  constructor(@InjectModel('bill') private billModel: Model<Bill>) {}
 
-  async createBill(bill: CreateBillDto): Promise<CreateBillDto> {
+  async createBill(bill: Partial<Bill>): Promise<Bill> {
     return await this.billModel.create(bill);
   }
 
   async updateBill(
     id: string,
-    bill: UpdateBillDto,
-  ): Promise<UpdateBillDto | null> {
-    const updatedBill = await this.billModel.findOneAndUpdate(
-      { _id: id },
+    bill: UpdateQuery<Bill>,
+  ): Promise<BillDocument | null> {
+    const updatedBill = await this.billModel.findOneAndUpdate<BillDocument>(
+      { _id: constructObjId(id) },
       bill,
       { new: true },
     );
     return updatedBill;
   }
 
-  async getBillById(_id: string): Promise<CreateBillDto | null> {
-    const transaction = await this.billModel.findById(_id);
-    return transaction;
+  async getBillById(_id: string): Promise<BillDocument | null> {
+    const billTransaction = await this.billModel
+      .findById<BillDocument>(_id)
+      .exec();
+    return billTransaction;
   }
 
-  async getAllBillsForUser(
-    filter: FilterQuery<Bill>,
-  ): Promise<Array<UpdateBillDto>> {
-    const bills = await this.billModel.find(filter);
+  async getAllBillsForUser(filter: FilterQuery<BillDocument>) {
+    const bills = await this.billModel.find<Bill>(filter).exec();
     return bills;
   }
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Bill {
   @Prop({ required: true })
   amount!: number;
@@ -32,5 +32,11 @@ export class Bill {
   @Prop()
   paymentDate!: Date;
 }
+
+export type BillFromDb = Bill & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export const BillSchema = SchemaFactory.createForClass(Bill);

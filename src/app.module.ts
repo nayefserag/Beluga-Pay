@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TransactionModule } from './components/transaction/transaction.module';
 import { AccountModule } from './components/account/account.module';
 import { BillsModule } from './components/bills/bills.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './loging/loging.interceptor';
 
 @Module({
   imports: [
@@ -23,6 +25,12 @@ import { BillsModule } from './components/bills/bills.module';
     TransactionModule,
     AccountModule,
     BillsModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
   ],
 })
 export class AppModule {}

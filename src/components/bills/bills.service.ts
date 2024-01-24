@@ -7,6 +7,7 @@ import { generator } from '../../helpers/numbergenerator';
 import { BillMessages } from '../bills/bill.assets';
 import { AccountMessages } from '../account/account.assets';
 import { SearchBillsDto } from './dto/search-bill.dto';
+import { Bill, BillFromDb } from 'src/Schema/bill.schema';
 
 @Injectable()
 export class BillsService {
@@ -14,7 +15,7 @@ export class BillsService {
     private readonly billrepo: BillRepository,
     private readonly accountrepo: AccountRepository,
   ) {}
-  async create(createBillDto: CreateBillDto): Promise<CreateBillDto> {
+  async create(createBillDto: CreateBillDto): Promise<Bill> {
     createBillDto.invoiceNumber = generator('Inovice Number');
     const newBill = await this.billrepo.createBill(createBillDto);
     if (!newBill) {
@@ -26,7 +27,7 @@ export class BillsService {
     return newBill;
   }
 
-  async findAll(filter: SearchBillsDto): Promise<UpdateBillDto[]> {
+  async findAll(filter: SearchBillsDto): Promise<Bill[]> {
     const bills = await this.billrepo.getAllBillsForUser(filter);
     if (bills.length == 0) {
       throw new HttpException(BillMessages.NO_BILLS, HttpStatus.NOT_FOUND);
@@ -34,7 +35,7 @@ export class BillsService {
     return bills;
   }
 
-  async findOne(id: string): Promise<UpdateBillDto> {
+  async findOne(id: string): Promise<Bill> {
     const bill = await this.billrepo.getBillById(id);
     if (!bill) {
       throw new HttpException(BillMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -42,17 +43,14 @@ export class BillsService {
     return bill;
   }
 
-  async update(
-    id: string,
-    updateBillDto: UpdateBillDto,
-  ): Promise<UpdateBillDto> {
+  async update(id: string, updateBillDto: UpdateBillDto): Promise<Bill> {
     const updatedBill = await this.billrepo.updateBill(id, updateBillDto);
     if (!updatedBill) {
       throw new HttpException(BillMessages.NOT_UPDATED, HttpStatus.BAD_REQUEST);
     }
     return updatedBill;
   }
-  async pay(id: string, accountId: string): Promise<UpdateBillDto> {
+  async pay(id: string, accountId: string): Promise<BillFromDb> {
     const account = await this.accountrepo.getBy({ _id: accountId });
     if (!account) {
       throw new HttpException(
@@ -68,7 +66,7 @@ export class BillsService {
     account.balance -= bill.amount;
     bill.isPaid = true;
     await this.accountrepo.updateAccount(account, account.email);
-    const payedBill = await this.update(id, bill);
-    return payedBill;
+    const payedBill = await this.billrepo.updateBill(id, bill);
+    return payedBill!;
   }
 }

@@ -3,12 +3,32 @@ import { TransactionViaAccountNumberDto } from './dto/create-transaction-via-acc
 import { TransactionViaPhoneDto } from './dto/create-transaction-via-phone-number';
 import { TransactionService } from './transaction.service';
 import { TransactionMessages } from './transaction.assets';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
 
+} from '@nestjs/swagger';
+@ApiTags('Transaction CRUD')
 @Controller('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post('send-money/via-phone')
+  @ApiOperation({ summary: 'Send Money Via Phone' })
+  @ApiCreatedResponse({
+    description: 'Transaction Created',
+    type: TransactionViaPhoneDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBody({
+    description: 'Details of the transaction to send money via phone number',
+    type: TransactionViaPhoneDto,
+  })
   async sendMoneyViaPhone(@Body() sendingProcess: TransactionViaPhoneDto) {
     const transaction = await this.transactionService.sendMoney(sendingProcess);
     return {
@@ -19,6 +39,16 @@ export class TransactionController {
   }
 
   @Post('send-money/via-account-number')
+  @ApiOperation({ summary: 'Send Money Via Account Number' })
+  @ApiCreatedResponse({
+    description: 'Transaction Created',
+    type: TransactionViaAccountNumberDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBody({
+    description: 'Details of the transaction to send money via account number',
+    type: TransactionViaAccountNumberDto,
+  })
   async sendMoneyViaAccount(
     @Body() sendingProcess: TransactionViaAccountNumberDto,
   ) {
@@ -31,6 +61,13 @@ export class TransactionController {
   }
 
   @Patch('accept-transaction')
+  @ApiOperation({ summary: 'Accept Transaction' })
+  @ApiOkResponse({ description: 'Accepted Transaction' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBody({ 
+    description: 'ID of the transaction to accept',
+    type: String 
+  })
   async acceptTransaction(@Body() data: string) {
     const transaction = await this.transactionService.getTransactionById(data);
     const transactionUpdatedStatus =
@@ -52,6 +89,13 @@ export class TransactionController {
   }
 
   @Patch('reject-transaction')
+  @ApiOperation({ summary: 'Reject Transaction' })
+  @ApiOkResponse({ description: 'Rejected Transaction' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBody({ 
+    description: 'ID of the transaction to reject',
+    type: String 
+  })
   async rejectTransaction(@Body() data: string) {
     const transaction = await this.transactionService.getTransactionById(data);
     const transactionUpdated = await this.transactionService.transactinStatus({
@@ -71,6 +115,15 @@ export class TransactionController {
   }
 
   @Get('My-transactions')
+  @ApiOperation({ summary: 'Get My Transactions' })
+  @ApiOkResponse({ description: 'List of My Transactions' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiQuery({ 
+    name: 'id', 
+    required: true, 
+    description: 'User ID to retrieve transactions', 
+    type: String 
+  })
   async allTranaction(@Body() id: string) {
     const transactions = await this.transactionService.getAllTransactions(id);
     return {

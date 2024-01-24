@@ -12,12 +12,24 @@ import { AccountService } from './account.service';
 import { CreateBankAccountDto } from './dto/create-account';
 import { UpdateBankAccountDto } from './dto/update-account';
 import { AccountMessages } from './account.assets';
+import {
+  ApiOperation,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiOkResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post('create')
+  @ApiOperation({ summary: 'Create a new bank account' })
+  @ApiCreatedResponse({ description: 'Bank account created successfully.' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiBody({ type: CreateBankAccountDto })
   async create(@Body() account: CreateBankAccountDto) {
     await this.accountService.checkAndcreateAccount(account);
     return {
@@ -27,6 +39,13 @@ export class AccountController {
   }
 
   @Get('getbyid/:id')
+  @ApiOperation({ summary: 'Get bank account by ID' })
+  @ApiOkResponse({
+    description: 'Bank account fetched successfully.',
+    type: CreateBankAccountDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiParam({ name: 'id', type: String, description: 'ID of the bank account' })
   async get(@Param('id') id: string) {
     const account = await this.accountService.getAccounts({
       _id: id,
@@ -39,6 +58,17 @@ export class AccountController {
   }
 
   @Get('getbyemail/:email')
+  @ApiOperation({ summary: 'Get bank account by email' })
+  @ApiOkResponse({
+    description: 'Bank account fetched successfully.',
+    type: CreateBankAccountDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiParam({
+    name: 'email',
+    type: String,
+    description: 'Email associated with the bank account',
+  })
   async getByEmail(@Param('email') email: string) {
     const account = await this.accountService.getAccounts({
       email,
@@ -51,6 +81,17 @@ export class AccountController {
   }
 
   @Get('getbyaccountnumber/:accountNumber')
+  @ApiOperation({ summary: 'Get bank account by account number' })
+  @ApiOkResponse({
+    description: 'Bank account fetched successfully.',
+    type: CreateBankAccountDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiParam({
+    name: 'accountNumber',
+    type: String,
+    description: 'Account number of the bank account',
+  })
   async getByAccountNumber(@Param('accountNumber') accountNumber: string) {
     const account = await this.accountService.getAccounts({
       accountNumber,
@@ -63,6 +104,17 @@ export class AccountController {
   }
 
   @Get('getalluseraccounts/:email')
+  @ApiOperation({ summary: 'Get all bank accounts of a user' })
+  @ApiOkResponse({
+    description: 'List of bank accounts fetched successfully.',
+    type: CreateBankAccountDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiParam({
+    name: 'email',
+    type: String,
+    description: 'Email of the user to fetch accounts for',
+  })
   async getAllUserAccounts(@Param('email') email: string) {
     const account = await this.accountService.getAllUserAccounts(email);
     return {
@@ -73,6 +125,18 @@ export class AccountController {
   }
 
   @Patch('updateaccount/:email')
+  @ApiOperation({ summary: 'Update bank account' })
+  @ApiOkResponse({
+    description: 'Bank account updated successfully.',
+    type: UpdateBankAccountDto,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiParam({
+    name: 'email',
+    type: String,
+    description: 'Email associated with the bank account to update',
+  })
+  @ApiBody({ type: UpdateBankAccountDto })
   async updateAccount(
     @Body() account: UpdateBankAccountDto,
     @Param('email') email: string,
@@ -92,6 +156,14 @@ export class AccountController {
   }
 
   @Delete('deleteaccount/:email')
+  @ApiOperation({ summary: 'Delete bank account' })
+  @ApiOkResponse({ description: 'Bank account deleted successfully.' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiParam({
+    name: 'email',
+    type: String,
+    description: 'Email associated with the bank account to delete',
+  })
   async deleteAccount(@Param('email') email: string) {
     await this.accountService.getAccounts({
       email,

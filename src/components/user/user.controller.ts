@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Param,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -13,6 +14,9 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiParam
 } from '@nestjs/swagger';
 import { EmailDto } from './dto/email';
 import { UpdateUserDto } from './dto/update-user';
@@ -27,8 +31,10 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
+  @ApiOperation({ summary: 'Create User' })
   @ApiCreatedResponse({ description: 'User created successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiBody({ type: CreateUserDto })  
   async create(@Body() user: CreateUserDto) {
     const newUser = await this.userService.checkAndCreateUser(user);
     return {
@@ -38,11 +44,13 @@ export class UserController {
     };
   }
 
-  @Get('getuser')
+  @Get('getuser/:email')
+  @ApiOperation({ summary: 'Get User' })
   @ApiOkResponse({ description: 'User fetched successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async getUser(@Body() data: EmailDto) {
+  @ApiParam({ name: 'email', type: String, description: 'Email of the user to fetch' })
+  async getUser(@Param('email') data: EmailDto) {
     const user = await this.userService.getUser(data.email);
     if (!user) {
       throw new HttpException(
@@ -54,12 +62,14 @@ export class UserController {
       message: UserMessages.USER_FETCHED,
       status: HttpStatus.OK,
       data: user,
-    };
+    };  
   }
 
   @Patch('updateuser')
+  @ApiOperation({ summary: 'Update User' })
   @ApiOkResponse({ description: 'User updated successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiBody({ type: UpdateUserDto })
   async updateUser(@Body() user: UpdateUserDto) {
     await this.userService.getUser(user.email);
     const updatedUser = await this.userService.updateUser(user);
@@ -71,8 +81,11 @@ export class UserController {
   }
 
   @Delete('deleteuser')
+  @ApiOperation({ summary: 'Delete User' })
   @ApiOkResponse({ description: 'User deleted successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiBody({ type: EmailDto })
   async deleteUser(@Body() data: EmailDto) {
     await this.userService.getUser(data.email);
     await this.userService.deleteUser(data.email);
