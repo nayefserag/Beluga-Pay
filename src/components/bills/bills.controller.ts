@@ -34,7 +34,11 @@ export class BillsController {
 
   @Post('create')
   @ApiOperation({ summary: 'Create a new bill' })
-  @ApiCreatedResponse({ status: 201, description: 'Bill successfully created.', type: Bill })
+  @ApiCreatedResponse({
+    status: 201,
+    description: 'Bill successfully created.',
+    type: Bill,
+  })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiBody({ type: CreateBillDto })
   async create(@Body() createBillDto: CreateBillDto) {
@@ -51,7 +55,7 @@ export class BillsController {
   @ApiOkResponse({ status: 200, description: 'List of bills.', type: [Bill] })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiQuery({ name: 'customerAccountNumber', required: false, type: String })
-  @ApiQuery({ name: 'customerPhone', required: false, type: String })  
+  @ApiQuery({ name: 'customerPhone', required: false, type: String })
   async findAll(@Query() filter: SearchBillsDto) {
     const { customerAccountNumber, customerPhone } = filter;
 
@@ -72,15 +76,19 @@ export class BillsController {
 
   @Get('/:billId')
   @ApiOperation({ summary: 'Find a bill by ID' })
-  @ApiOkResponse({ status: 200, description: 'Details of the bill.', type: Bill })
+  @ApiOkResponse({
+    status: 200,
+    description: 'Details of the bill.',
+    type: Bill,
+  })
   @ApiBadRequestResponse({ description: 'Invalid Bill ID' })
-  @ApiParam({ name: 'billId', description: 'ID of the bill', type: String })  
-  findOne(@Param('billId') billId: string) {
+  @ApiParam({ name: 'billId', description: 'ID of the bill', type: String })
+  async findOne(@Param('billId') billId: string) {
     const valid = isValidObjectID(billId);
     if (!valid) {
       throw new HttpException(BillMessages.INVALID_ID, HttpStatus.BAD_REQUEST);
     }
-    const bill = this.billsService.findOne(billId);
+    const bill = await this.billsService.findOne(billId);
     return {
       message: BillMessages.YOUR_BILL,
       status: HttpStatus.OK,
@@ -90,9 +98,17 @@ export class BillsController {
 
   @Patch('payBill/:id')
   @ApiOperation({ summary: 'Pay a bill' })
-  @ApiOkResponse({ status: 200, description: 'Bill payment success.', type: Bill })
+  @ApiOkResponse({
+    status: 200,
+    description: 'Bill payment success.',
+    type: Bill,
+  })
   @ApiBadRequestResponse({ description: 'Invalid Bill ID or Account ID' })
-  @ApiParam({ name: 'id', description: 'ID of the bill to be paid', type: String })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the bill to be paid',
+    type: String,
+  })
   @ApiBody({
     description: 'Account ID for payment',
     type: Object,
