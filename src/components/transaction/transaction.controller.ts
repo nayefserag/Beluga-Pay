@@ -18,6 +18,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -32,8 +33,9 @@ export class TransactionController {
   @ApiCreatedResponse({
     description: 'Transaction Created',
     type: TransactionViaPhoneDto,
+    status: 201,
   })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBadRequestResponse({ description: 'Bad Request' , status: 400})
   @ApiBody({
     description: 'Details of the transaction to send money via phone number',
     type: TransactionViaPhoneDto,
@@ -52,8 +54,9 @@ export class TransactionController {
   @ApiCreatedResponse({
     description: 'Transaction Created',
     type: TransactionViaAccountNumberDto,
+    status: 201,
   })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBadRequestResponse({ description: 'Bad Request' , status: 400})
   @ApiBody({
     description: 'Details of the transaction to send money via account number',
     type: TransactionViaAccountNumberDto,
@@ -71,8 +74,8 @@ export class TransactionController {
 
   @Patch('accept-transaction')
   @ApiOperation({ summary: 'Accept Transaction' })
-  @ApiOkResponse({ description: 'Accepted Transaction' })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiOkResponse({ description: 'Accepted Transaction' , status: 200})
+  @ApiBadRequestResponse({ description: 'Bad Request' , status: 400})
   @ApiBody({
     description: 'ID of the transaction to accept',
     type: String,
@@ -99,8 +102,8 @@ export class TransactionController {
 
   @Patch('reject-transaction')
   @ApiOperation({ summary: 'Reject Transaction' })
-  @ApiOkResponse({ description: 'Rejected Transaction' })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiOkResponse({ description: 'Rejected Transaction' , status: 200})
+  @ApiBadRequestResponse({ description: 'Bad Request' , status: 400})
   @ApiBody({
     description: 'ID of the transaction to reject',
     type: String,
@@ -125,13 +128,25 @@ export class TransactionController {
 
   @Get('My-transactions/:id')
   @ApiOperation({ summary: 'Get My Transactions' })
-  @ApiOkResponse({ description: 'List of My Transactions' })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiQuery({
+  @ApiOkResponse({ description: 'List of My Transactions' , status: 200})
+  @ApiBadRequestResponse({ description: 'Bad Request' , status: 400})
+  @ApiParam({
     name: 'id',
     required: true,
     description: 'User ID to retrieve transactions',
     type: String,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of transactions per page',
+    type: Number,
   })
   async allTranaction(
     @Param('id') id: string,
@@ -139,7 +154,10 @@ export class TransactionController {
     @Query('limit') limit: number,
   ) {
     const options: PaginationDto = { page, limit };
-    const transactions = await this.transactionService.getAllTransactions(id,options);
+    const transactions = await this.transactionService.getAllTransactions(
+      id,
+      options,
+    );
     return {
       message: TransactionMessages.TRANSACTION_REJECTED,
       status: HttpStatus.OK,

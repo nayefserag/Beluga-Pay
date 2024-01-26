@@ -21,17 +21,23 @@ import {
   ApiOkResponse,
   ApiParam,
   ApiQuery,
+  ApiTags,
+  ApiConflictResponse,
 } from '@nestjs/swagger';
 import { PaginationDto } from 'src/options/pagination.dto';
-
+@ApiTags('Account CRUD')
 @Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post('create')
-  @ApiOperation({ summary: 'Create a new bank account' })
-  @ApiCreatedResponse({ description: 'Bank account created successfully.' })
-  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiOperation({
+    summary: 'Create a new bank account for a user', 
+    description: 'Creates a new bank account associated with the provided user email. Returns the created account object.'
+  })
+  @ApiCreatedResponse({ description: 'Bank account created successfully.' ,status: 201})
+  @ApiBadRequestResponse({ description: 'Bad request' ,status: 400})
+  @ApiConflictResponse({ description: 'Account already exists for this user' ,status: 409})
   @ApiBody({ type: CreateBankAccountDto })
   async create(@Body() account: CreateBankAccountDto) {
     await this.accountService.checkAndcreateAccount(account);

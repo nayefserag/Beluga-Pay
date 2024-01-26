@@ -16,7 +16,8 @@ import {
   ApiTags,
   ApiOperation,
   ApiBody,
-  ApiParam
+  ApiParam,
+  ApiConflictResponse,
 } from '@nestjs/swagger';
 import { EmailDto } from './dto/email';
 import { UpdateUserDto } from './dto/update-user';
@@ -25,16 +26,42 @@ import { UserService } from './user.service';
 import { HttpException } from '@nestjs/common';
 import { UserMessages } from './user.assets';
 
-@ApiTags('User CRUD Operations ')
+@ApiTags('User CRUD ')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  @ApiOperation({ summary: 'Create User' })
-  @ApiCreatedResponse({ description: 'User created successfully.' })
-  @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiBody({ type: CreateUserDto })  
+  @ApiOperation({ 
+    summary: 'Create a new user',
+    description: 'Creates a new user with the provided information and saves it to the database.' 
+  })
+  @ApiCreatedResponse({
+    description: 'User created successfully.',
+    status: 201,
+    type: CreateUserDto
+  })
+  @ApiConflictResponse({ description: 'User already exists', status: 409 })
+  @ApiBadRequestResponse({ description: 'Bad request', status: 400 })
+  @ApiBody({
+    type: CreateUserDto,
+    examples: {
+      'example1': {
+        value: {
+          name: 'John',
+          email: 'jQn9P@example.com',
+          password: 'password'
+        }
+      },
+      'example2': {
+        value: {
+          name: 'Jane',
+          email: 'jQn9P@example.com',
+          password: 'password'
+        }
+      }
+    }
+  })
   async create(@Body() user: CreateUserDto) {
     const newUser = await this.userService.checkAndCreateUser(user);
     return {
@@ -46,10 +73,14 @@ export class UserController {
 
   @Get('getuser/:email')
   @ApiOperation({ summary: 'Get User' })
-  @ApiOkResponse({ description: 'User fetched successfully.' })
-  @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiNotFoundResponse({ description: 'User not found' })
-  @ApiParam({ name: 'email', type: String, description: 'Email of the user to fetch' })
+  @ApiOkResponse({ description: 'User fetched successfully.', status: 200 })
+  @ApiBadRequestResponse({ description: 'Bad request', status: 400 })
+  @ApiNotFoundResponse({ description: 'User not found', status: 404 })
+  @ApiParam({
+    name: 'email',
+    type: String,
+    description: 'Email of the user to fetch',
+  })
   async getUser(@Param('email') data: EmailDto) {
     const user = await this.userService.getUser(data.email);
     if (!user) {
@@ -62,13 +93,13 @@ export class UserController {
       message: UserMessages.USER_FETCHED,
       status: HttpStatus.OK,
       data: user,
-    };  
+    };
   }
 
   @Patch('updateuser')
   @ApiOperation({ summary: 'Update User' })
-  @ApiOkResponse({ description: 'User updated successfully.' })
-  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiOkResponse({ description: 'User updated successfully.', status: 200 ,type: UpdateUserDto})
+  @ApiBadRequestResponse({ description: 'Bad request', status: 400 })
   @ApiBody({ type: UpdateUserDto })
   async updateUser(@Body() user: UpdateUserDto) {
     await this.userService.getUser(user.email);
@@ -80,13 +111,17 @@ export class UserController {
     };
   }
 
-  @Delete('deleteuser')
+  @Delete('deleteuser/:email')
   @ApiOperation({ summary: 'Delete User' })
-  @ApiOkResponse({ description: 'User deleted successfully.' })
-  @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiNotFoundResponse({ description: 'User not found' })
-  @ApiBody({ type: EmailDto })
-  async deleteUser(@Body() data: EmailDto) {
+  @ApiOkResponse({ description: 'User deleted successfully.', status: 200 })
+  @ApiBadRequestResponse({ description: 'Bad request', status: 400 })
+  @ApiNotFoundResponse({ description: 'User not found', status: 404 })
+  @ApiParam({
+    name: 'email',
+    type: EmailDto,
+    description: 'Email of the user to delete',
+  })
+  async deleteUser(@Param('email') data: EmailDto) {
     await this.userService.getUser(data.email);
     await this.userService.deleteUser(data.email);
     return {

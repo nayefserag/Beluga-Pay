@@ -28,7 +28,7 @@ import {
 import { Bill } from 'src/Schema/bill.schema';
 import { PaginationDto } from 'src/options/pagination.dto';
 @Controller('bills')
-@ApiTags('bills')
+@ApiTags('Bills CRUD')
 export class BillsController {
   constructor(private readonly billsService: BillsService) {}
 
@@ -39,7 +39,7 @@ export class BillsController {
     description: 'Bill successfully created.',
     type: Bill,
   })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBadRequestResponse({ description: 'Bad Request', status: 400 })
   @ApiBody({ type: CreateBillDto })
   async create(@Body() createBillDto: CreateBillDto) {
     const bill = await this.billsService.create(createBillDto);
@@ -53,7 +53,7 @@ export class BillsController {
   @Get()
   @ApiOperation({ summary: 'Find all bills based on filter' })
   @ApiOkResponse({ status: 200, description: 'List of bills.', type: [Bill] })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBadRequestResponse({ description: 'Bad Request', status: 400 })
   @ApiQuery({ name: 'customerAccountNumber', required: false, type: String })
   @ApiQuery({ name: 'customerPhone', required: false, type: String })
   async findAll(
@@ -61,7 +61,7 @@ export class BillsController {
     @Query('page') page: number,
     @Query('limit') limit: number,
   ) {
-    const options : PaginationDto = { page, limit };
+    const options: PaginationDto = { page, limit };
     const { customerAccountNumber, customerPhone } = filter;
 
     if (!customerAccountNumber && !customerPhone) {
@@ -86,7 +86,7 @@ export class BillsController {
     description: 'Details of the bill.',
     type: Bill,
   })
-  @ApiBadRequestResponse({ description: 'Invalid Bill ID' })
+  @ApiBadRequestResponse({ description: 'Invalid Bill ID', status: 400 })
   @ApiParam({ name: 'billId', description: 'ID of the bill', type: String })
   async findOne(@Param('billId') billId: string) {
     const valid = isValidObjectID(billId);
@@ -108,7 +108,10 @@ export class BillsController {
     description: 'Bill payment success.',
     type: Bill,
   })
-  @ApiBadRequestResponse({ description: 'Invalid Bill ID or Account ID' })
+  @ApiBadRequestResponse({
+    description: 'Invalid Bill ID or Account ID',
+    status: 400,
+  })
   @ApiParam({
     name: 'id',
     description: 'ID of the bill to be paid',
@@ -116,7 +119,7 @@ export class BillsController {
   })
   @ApiBody({
     description: 'Account ID for payment',
-    type: Object,
+    type: Bill ,
     schema: {
       type: 'object',
       properties: {
@@ -126,6 +129,14 @@ export class BillsController {
         },
       },
     },
+    examples: {
+      example1: {
+        value: {
+          accountId: '12345',
+        
+        }
+      }
+    }
   })
   async payBill(@Param('id') id: string, @Body('accountId') accountId: string) {
     const validBill = isValidObjectID(id);
