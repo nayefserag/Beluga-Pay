@@ -8,6 +8,7 @@ import { BillMessages } from '../bills/bill.assets';
 import { AccountMessages } from '../account/account.assets';
 import { SearchBillsDto } from './dto/search-bill.dto';
 import { Bill, BillFromDb } from 'src/Schema/bill.schema';
+import { PaginationDto } from 'src/options/pagination.dto';
 
 @Injectable()
 export class BillsService {
@@ -27,8 +28,11 @@ export class BillsService {
     return newBill;
   }
 
-  async findAll(filter: SearchBillsDto): Promise<Bill[]> {
-    const bills = await this.billrepo.getAllBillsForUser(filter);
+  async findAll(
+    filter: SearchBillsDto,
+    options: PaginationDto,
+  ): Promise<Bill[]> {
+    const bills = await this.billrepo.getAllBillsForUser(filter, options);
     if (bills.length == 0) {
       throw new HttpException(BillMessages.NO_BILLS, HttpStatus.NOT_FOUND);
     }

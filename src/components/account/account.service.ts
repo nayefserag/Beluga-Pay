@@ -8,6 +8,7 @@ import { UpdateBankAccountDto } from './dto/update-account';
 import { AccountMessages } from './account.assets';
 import { UserMessages } from '../user/user.assets';
 import { isValidObjectID } from '../../helpers/idValidator';
+import { PaginationDto } from 'src/options/pagination.dto';
 @Injectable()
 export class AccountService {
   constructor(
@@ -74,7 +75,7 @@ export class AccountService {
     return account;
   }
 
-  async getAllUserAccounts(email: string,pagination: {skip: number, limit: number}) {
+  async getAllUserAccounts(email: string,pagination: PaginationDto) {
     const user = await this.userRepo.getUserByEmail({ email });
     if (!user) {
       throw new HttpException(

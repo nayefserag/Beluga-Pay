@@ -14,7 +14,7 @@ export class UserRepository {
   }
 
   async getUserByEmail({
-    email,
+    email
   }: {
     email: string;
   }): Promise<CreateUserDto | null> {

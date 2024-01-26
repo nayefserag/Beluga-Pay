@@ -6,6 +6,7 @@ import { UserMessages } from '../user/user.assets';
 import { isValidObjectID } from '../../helpers/idValidator';
 import { AccountRepository } from '../../repos/account.repo';
 import { TransactionRepository } from '../../repos/transaction.repo';
+import { PaginationDto } from 'src/options/pagination.dto';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -200,7 +201,7 @@ export class TransactionService {
     }
   }
 
-  async getAllTransactions(id: string) {
+  async getAllTransactions(id: string,options:PaginationDto) {
     if (!isValidObjectID(id)) {
       throw new HttpException(
         UserMessages.INVALID_USER_ID,
@@ -215,7 +216,7 @@ export class TransactionService {
       );
     }
     const transactions =
-      await this.transactionRepository.getAllTransactionsForUser(id);
+      await this.transactionRepository.getAllTransactionsForUser(id,options);
     if (transactions.length == 0) {
       throw new HttpException(
         TransactionMessages.TRANSACTION_ZERO,

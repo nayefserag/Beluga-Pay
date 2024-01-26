@@ -20,7 +20,9 @@ import {
   ApiBody,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { PaginationDto } from 'src/options/pagination.dto';
 
 @Controller('account')
 export class AccountController {
@@ -111,18 +113,30 @@ export class AccountController {
     type: CreateBankAccountDto,
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiParam({
+  @ApiQuery({
     name: 'email',
     type: String,
     description: 'Email of the user to fetch accounts for',
   })
+  @ApiQuery({
+    name: 'page', 
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Number of items per page',
+  })
   async getAllUserAccounts(
     @Param('email') email: string,
-    @Query() pagination: { skip: number, limit: number },
+    @Query('page') page: number,
+    @Query('limit') limit: number
   ) {
+    const options: PaginationDto = { page, limit };
     const account = await this.accountService.getAllUserAccounts(
       email,
-      pagination,
+      options,
     );
     return {
       message: AccountMessages.ACCOUNT_FETCHED,
@@ -130,7 +144,6 @@ export class AccountController {
       data: account,
     };
   }
-
   @Patch('updateaccount/:email')
   @ApiOperation({ summary: 'Update bank account' })
   @ApiOkResponse({

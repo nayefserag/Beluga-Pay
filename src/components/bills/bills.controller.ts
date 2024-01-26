@@ -18,7 +18,6 @@ import { AccountMessages } from '../account/account.assets';
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
   ApiBody,
   ApiParam,
   ApiCreatedResponse,
@@ -27,6 +26,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { Bill } from 'src/Schema/bill.schema';
+import { PaginationDto } from 'src/options/pagination.dto';
 @Controller('bills')
 @ApiTags('bills')
 export class BillsController {
@@ -56,7 +56,12 @@ export class BillsController {
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiQuery({ name: 'customerAccountNumber', required: false, type: String })
   @ApiQuery({ name: 'customerPhone', required: false, type: String })
-  async findAll(@Query() filter: SearchBillsDto) {
+  async findAll(
+    @Query() filter: SearchBillsDto,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    const options : PaginationDto = { page, limit };
     const { customerAccountNumber, customerPhone } = filter;
 
     if (!customerAccountNumber && !customerPhone) {
@@ -65,7 +70,7 @@ export class BillsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const bills = await this.billsService.findAll(filter);
+    const bills = await this.billsService.findAll(filter, options);
 
     return {
       message: BillMessages.YOUR_BILLS,

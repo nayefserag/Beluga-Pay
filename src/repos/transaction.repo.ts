@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TransactionViaAccountNumberDto } from '../components/transaction/dto/create-transaction-via-account-number';
 import { TransactionViaPhoneDto } from '../components/transaction/dto/create-transaction-via-phone-number';
+import { PaginationDto } from 'src/options/pagination.dto';
 
 @Injectable()
 export class TransactionRepository {
@@ -38,10 +39,13 @@ export class TransactionRepository {
 
   async getAllTransactionsForUser(
     userId: string,
+    options?:PaginationDto
   ): Promise<Array<TransactionViaPhoneDto | TransactionViaAccountNumberDto>> {
+    const { limit, page } = options || { limit: 10, page: 1 };
+    const skip = (page - 1) * limit;
     const transactions = await this.transactionModel.find({
       $or: [{ 'sender.userId': userId }, { 'receiver.userId': userId }],
-    });
+    }).limit(limit).skip(skip).exec();
     return transactions;
   }
 }

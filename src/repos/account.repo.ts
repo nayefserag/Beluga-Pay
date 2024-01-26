@@ -10,6 +10,7 @@ import { UserRepository } from '../repos/user.repo';
 import { TransactionRepository } from './transaction.repo';
 import { constructObjId } from '../helpers/idValidator';
 import { Account } from '../Schema/account.schema';
+import { PaginationDto } from 'src/options/pagination.dto';
 
 @Injectable()
 export class AccountRepository {
@@ -39,14 +40,20 @@ export class AccountRepository {
 
   async getAllUserAccounts({
     email,
-    pagination
+    pagination,
   }: {
-    email: string,
-    pagination: {skip: number, limit: number}
+    email: string;
+    pagination: PaginationDto;
   }): Promise<CreateBankAccountDto[]> {
-    const accounts =await this.accountModel.find({ email }).limit(pagination.limit).skip(pagination.skip).exec();
+    const { limit, page } = pagination;
+    const skip = (page - 1) * limit;
+    const accounts = await this.accountModel
+      .find({ email })
+      .limit(limit)
+      .skip(skip)
+      .exec();
 
-    return accounts
+    return accounts;
   }
 
   async updateAccount(

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { TransactionViaAccountNumberDto } from './dto/create-transaction-via-account-number';
 import { TransactionViaPhoneDto } from './dto/create-transaction-via-phone-number';
 import { TransactionService } from './transaction.service';
@@ -11,8 +20,8 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
-
 } from '@nestjs/swagger';
+import { PaginationDto } from 'src/options/pagination.dto';
 @ApiTags('Transaction CRUD')
 @Controller('transaction')
 export class TransactionController {
@@ -64,9 +73,9 @@ export class TransactionController {
   @ApiOperation({ summary: 'Accept Transaction' })
   @ApiOkResponse({ description: 'Accepted Transaction' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiBody({ 
+  @ApiBody({
     description: 'ID of the transaction to accept',
-    type: String 
+    type: String,
   })
   async acceptTransaction(@Body() data: string) {
     const transaction = await this.transactionService.getTransactionById(data);
@@ -92,9 +101,9 @@ export class TransactionController {
   @ApiOperation({ summary: 'Reject Transaction' })
   @ApiOkResponse({ description: 'Rejected Transaction' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiBody({ 
+  @ApiBody({
     description: 'ID of the transaction to reject',
-    type: String 
+    type: String,
   })
   async rejectTransaction(@Body() data: string) {
     const transaction = await this.transactionService.getTransactionById(data);
@@ -114,18 +123,23 @@ export class TransactionController {
     };
   }
 
-  @Get('My-transactions')
+  @Get('My-transactions/:id')
   @ApiOperation({ summary: 'Get My Transactions' })
   @ApiOkResponse({ description: 'List of My Transactions' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiQuery({ 
-    name: 'id', 
-    required: true, 
-    description: 'User ID to retrieve transactions', 
-    type: String 
+  @ApiQuery({
+    name: 'id',
+    required: true,
+    description: 'User ID to retrieve transactions',
+    type: String,
   })
-  async allTranaction(@Body() id: string) {
-    const transactions = await this.transactionService.getAllTransactions(id);
+  async allTranaction(
+    @Param('id') id: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    const options: PaginationDto = { page, limit };
+    const transactions = await this.transactionService.getAllTransactions(id,options);
     return {
       message: TransactionMessages.TRANSACTION_REJECTED,
       status: HttpStatus.OK,
