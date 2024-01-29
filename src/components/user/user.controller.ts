@@ -119,15 +119,15 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'User not found', status: 404 })
   @ApiParam({
     name: 'email',
-    type: EmailDto,
+    type: String,
     description: 'Email of the user to delete',
   })
-  async deleteUser(@Param('email') data: EmailDto) {
-    await this.userService.getUser(data.email);
-    await this.userService.deleteUser(data.email);
+  async deleteUser(@Param('email') email: string) {
+    await this.userService.getUser(email);
+    await this.userService.deleteUser(email);
     return {
       message: UserMessages.USER_DELETED,
-      status: HttpStatus.OK,
+      status: HttpStatus.NO_CONTENT,
     };
   }
 }
