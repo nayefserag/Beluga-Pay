@@ -13,7 +13,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiTags,
+  ApiTags,  
   ApiOperation,
   ApiBody,
   ApiParam,
@@ -71,7 +71,7 @@ export class UserController {
     };
   }
 
-  @Get('getuser/:email')
+  @Get(':email')
   @ApiOperation({ summary: 'Get User' })
   @ApiOkResponse({ description: 'User fetched successfully.', status: 200 })
   @ApiBadRequestResponse({ description: 'Bad request', status: 400 })
@@ -81,8 +81,9 @@ export class UserController {
     type: String,
     description: 'Email of the user to fetch',
   })
-  async getUser(@Param('email') data: EmailDto) {
-    const user = await this.userService.getUser(data.email);
+  async getUser(@Param('email') email: string) {
+    console.log(email)
+    const user = await this.userService.getUser(email);
     if (!user) {
       throw new HttpException(
         UserMessages.USER_NOT_FOUND,
