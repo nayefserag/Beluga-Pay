@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 export function setupSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
     .setTitle('Beluga Bank API')
-    .setDescription('Bank ABI simulate')
+    .setDescription('Bank API simulate')
     .setVersion('1.0')
     .build();
 
