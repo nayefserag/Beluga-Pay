@@ -1,8 +1,6 @@
 
 <p align="center">
-  <a href="https://belugapay.com" target="blank">
-    <img src="https://i.imgur.com/yourLogo.png" width="400" alt="Beluga Pay Logo" />
-  </a>
+<a href="https://imgur.com/1fHb8pf"><img src="https://i.imgur.com/1fHb8pf.png" title="source: imgur.com" /></a>
 </p>
 
 <h1 align="center">Beluga Pay</h1>
