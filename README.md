@@ -1,4 +1,6 @@
+<p align="center">
 <a href="https://imgur.com/1fHb8pf"><img src="https://i.imgur.com/1fHb8pf.png" title="source: imgur.com" /></a>
+</p>
 
 <h1 align="center">Beluga Pay</h1>
 
