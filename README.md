@@ -1,5 +1,8 @@
+
 <p align="center">
-<a href="https://imgur.com/1fHb8pf"><img src="https://i.imgur.com/1fHb8pf.png" title="source: imgur.com" /></a>
+  <a href="https://belugapay.com" target="blank">
+    <img src="https://i.imgur.com/yourLogo.png" width="400" alt="Beluga Pay Logo" />
+  </a>
 </p>
 
 <h1 align="center">Beluga Pay</h1>
@@ -8,21 +11,19 @@
 
 Beluga Pay is a comprehensive backend solution for mobile payments, designed to streamline financial transactions such as bank account linking, bill payments, and various other transactions. Built on modern technologies, it aims to provide a seamless and secure payment experience for both businesses and individuals.
 
-### Key Features
+### Key Features (Backend)
 
-- **Bank Account Integration:** Easily link and manage multiple bank accounts within the app for convenient access to your finances.
+- **APIs for Bank Account Integration:** Provides endpoints to link and manage multiple bank accounts, facilitating convenient access to finances.
   
-- **Bill Payments:** Facilitate timely bill payments directly from the app, supporting a wide range of service providers.
+- **Bill Payments Processing:** Offers API endpoints for initiating and managing bill payments to a wide range of service providers.
   
-- **Secure Transactions:** Enhanced security measures to protect financial data and transaction details.
+- **Security and Authentication:** Implements advanced security protocols and authentication mechanisms to protect financial data and transaction details.
   
-- **Real-time Notifications:** Stay informed with instant notifications for account activity and transactions.
-  
-- **User-Friendly Interface:** Intuitive design for effortless navigation and operation of financial tasks.
+- **Data Management and Access:** Efficient data handling and access patterns for user-friendly interface operations on the frontend.
 
 ## Installation
 
-Follow these steps to get Beluga Pay running locally:
+Follow these steps to get Beluga Pay's backend running locally:
 
 ```bash
 $ npm install
@@ -56,7 +57,6 @@ $ npm run test:cov
 
 ## Stay in touch
 
-- **Portfolio:** [![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/yourGitHub)
+- **Portfolio:** [![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/nayefserag)
 
-- **LinkedIn:** [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/yourLinkedIn)
-
+- **LinkedIn:** [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nayf-serag-70a3611b8)
