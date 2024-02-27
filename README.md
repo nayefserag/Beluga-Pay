@@ -1,7 +1,7 @@
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
-
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
@@ -25,9 +25,21 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Beluga Pay is a comprehensive backend solution for mobile payments, designed to streamline financial transactions such as bank account linking, bill payments, and various other transactions. Built on modern technologies, it aims to provide a seamless and secure payment experience for both businesses and individuals.
+
+### Key Features (Backend)
+
+- **APIs for Bank Account Integration:** Provides endpoints to link and manage multiple bank accounts, facilitating convenient access to finances.
+  
+- **Bill Payments Processing:** Offers API endpoints for initiating and managing bill payments to a wide range of service providers.
+  
+- **Security and Authentication:** Implements advanced security protocols and authentication mechanisms to protect financial data and transaction details.
+  
+- **Data Management and Access:** Efficient data handling and access patterns for user-friendly interface operations on the frontend.
 
 ## Installation
+
+Follow these steps to get Beluga Pay's backend running locally:
 
 ```bash
 $ npm install
@@ -59,16 +71,8 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **Portfolio:** [![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/nayefserag)
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+- **LinkedIn:** [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nayf-serag-70a3611b8)

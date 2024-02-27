@@ -47,15 +47,15 @@ describe('UserController', () => {
   });
 
   it('should get a user', async () => {
-    const emailDto: EmailDto = { email: 'test@test.com' };
+    const email =  'test@test.com' ;
     const user = {
-      ...emailDto,
+      email,
       name: 'test',
       password: 'test',
       accounts: ['test'],
     };
     jest.spyOn(userService, 'getUser').mockResolvedValue(user);
-    expect(await userController.getUser(emailDto)).toEqual({
+    expect(await userController.getUser(email)).toEqual({
       message: 'User fetched successfully',
       status: 200,
       data: user,
