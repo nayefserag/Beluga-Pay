@@ -2,7 +2,7 @@
 <p align="center">
   <a href="https://imgur.com/NEOAvhH"><img src="https://i.imgur.com/NEOAvhH.png" title="source: imgur.com" /></a>
 </p>
-
+<h1 align="center">Beluga Pay</h1>
 
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
