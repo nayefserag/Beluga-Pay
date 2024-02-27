@@ -1,8 +1,6 @@
 
 <p align="center">
-  <a href="https://belugapay.com" target="blank">
-    <img src="https://i.imgur.com/yourLogo.png" width="400" alt="Beluga Pay Logo" />
-  </a>
+  <a href="https://imgur.com/NEOAvhH"><img src="https://i.imgur.com/NEOAvhH.png" title="source: imgur.com" /></a>
 </p>
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
