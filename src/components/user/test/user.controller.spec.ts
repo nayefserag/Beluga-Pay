@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUserDto } from '../dto/create-user';
-import { EmailDto } from '../dto/email';
 import { UpdateUserDto } from '../dto/update-user';
 import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
@@ -78,11 +77,11 @@ describe('UserController', () => {
   });
 
   it('should delete a user', async () => {
-    const emailDto: EmailDto = { email: 'test@test.com' };
+    const emailDto =  'test@test.com' ;
     jest.spyOn(userService, 'deleteUser').mockResolvedValue(true);
     expect(await userController.deleteUser(emailDto)).toEqual({
       message: 'User deleted successfully',
-      status: 200,
+      status: 204,
     });
   });
 });
